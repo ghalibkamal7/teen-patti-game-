@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Teen Patti Gold - तीन पत्ती</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; user-select:none; }
+  :root{
+    --gold:#ffd700; --gold2:#b8860b; --felt:#0b6623; --felt2:#053d14;
+    --dark:#0a0a0f; --card:#fff; --red:#d40000; --black:#111;
+  }
+  body{
+    font-family:'Segoe UI',system-ui,sans-serif;
+    background:radial-gradient(circle at 50% 30%, #1a5c2a 0%, var(--felt2) 70%, var(--dark) 100%);
+    min-height:100vh; color:#fff; overflow-x:hidden; touch-action:manipulation;
+  }
+  .screen{ display:none; min-height:100vh; padding:16px; }
+  .screen.active{ display:flex; flex-direction:column; }
+
+  /* ---------- HOME ---------- */
+  #home{ align-items:center; justify-content:center; text-align:center; gap:18px; }
+  .logo{ font-size:clamp(40px,12vw,72px); font-weight:900;
+    background:linear-gradient(180deg,#fff6b0,var(--gold),var(--gold2));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    text-shadow:0 4px 12px rgba(0,0,0,.5); letter-spacing:2px; }
+  .logo-hindi{ font-size:clamp(22px,7vw,38px); color:var(--gold); letter-spacing:8px; margin-top:-6px;}
+  .suits{ font-size:28px; letter-spacing:10px; }
+  .suits .r{color:#ff5252;} .suits .b{color:#222; text-shadow:0 0 6px #fff;}
+  .coin-bar{ display:flex; gap:10px; align-items:center; background:rgba(0,0,0,.4);
+    padding:8px 18px; border-radius:30px; border:1px solid var(--gold2); font-weight:700; }
+  .menu-btn{ width:min(360px,88vw); padding:16px; border:none; border-radius:16px;
+    font-size:18px; font-weight:800; cursor:pointer; color:#222;
+    background:linear-gradient(180deg,#ffe680,var(--gold),var(--gold2));
+    box-shadow:0 6px 0 #8a6508,0 10px 18px rgba(0,0,0,.4); transition:.1s; }
+  .menu-btn:active{ transform:translateY(4px); box-shadow:0 2px 0 #8a6508; }
+  .menu-btn.secondary{ background:linear-gradient(180deg,#5a6cff,#2a3bd0);
+    color:#fff; box-shadow:0 6px 0 #16208a,0 10px 18px rgba(0,0,0,.4); }
+  .menu-btn.secondary:active{box-shadow:0 2px 0 #16208a;}
+  .menu-sub{ font-size:12px; font-weight:500; opacity:.85; margin-top:2px; }
+  .small-row{ display:flex; gap:10px; }
+  .small-row .menu-btn{ width:auto; flex:1; padding:12px; font-size:15px; }
+
+  /* ---------- TABLE ---------- */
+  #table{ padding:8px; }
+  .top-bar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;}
+  .icon-btn{ background:rgba(0,0,0,.45); border:1px solid var(--gold2); color:var(--gold);
+    width:40px; height:40px; border-radius:12px; font-size:18px; cursor:pointer; }
+  .pot{ background:rgba(0,0,0,.5); padding:6px 18px; border-radius:30px;
+    border:2px solid var(--gold); font-weight:800; font-size:16px; box-shadow:0 0 16px rgba(255,215,0,.3);}
+  .felt{ flex:1; position:relative; border-radius:24px; margin:6px 0;
+    background:radial-gradient(circle at 50% 45%, #1a7a33, var(--felt) 60%, var(--felt2));
+    border:8px solid #2b1a0a; box-shadow:inset 0 0 60px rgba(0,0,0,.6); min-height:380px;
+    display:flex; flex-direction:column; justify-content:space-between; padding:14px 8px;}
+  .player-seat{ display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .seat-info{ background:rgba(0,0,0,.55); padding:5px 12px; border-radius:20px;
+    font-size:13px; font-weight:700; display:flex; gap:8px; align-items:center; border:2px solid transparent;}
+  .seat-info.active{ border-color:var(--gold); box-shadow:0 0 14px var(--gold); }
+  .seat-info.folded{ opacity:.4; }
+  .seat-info .av{ font-size:18px; }
+  .seat-info .chips{ color:var(--gold); }
+  .status-tag{ font-size:11px; padding:2px 8px; border-radius:10px; font-weight:700; min-height:18px;}
+  .tag-blind{ background:#7b1fa2; } .tag-seen{ background:#1565c0; }
+  .tag-fold{ background:#555; } .tag-bet{ background:#2e7d32; }
+  .cards-row{ display:flex; gap:5px; justify-content:center; min-height:74px; }
+  .card{ width:48px; height:68px; border-radius:7px; background:var(--card);
+    display:flex; flex-direction:column; justify-content:space-between; padding:4px;
+    font-weight:900; box-shadow:0 3px 6px rgba(0,0,0,.4); position:relative;
+    animation:deal .35s ease; }
+  @keyframes deal{ from{transform:translateY(-120px) rotate(-20deg); opacity:0;} }
+  .card.back{ background:repeating-linear-gradient(45deg,#1a3a8a,#1a3a8a 6px,#2954c4 6px,#2954c4 12px);
+    border:2px solid #fff; }
+  .card.back::after{ content:'♠'; position:absolute; inset:0; display:flex; align-items:center;
+    justify-content:center; font-size:24px; color:rgba(255,255,255,.55);}
+  .card .tl{ font-size:15px; line-height:1; } .card .br{ font-size:15px; align-self:flex-end; transform:rotate(180deg);}
+  .card .mid{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:22px;}
+  .card.red{ color:var(--red); } .card.black{ color:var(--black); }
+  .pot-center{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    text-align:center; pointer-events:none; }
+  .chip-stack{ font-size:30px; }
+  .deck-pile{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:50px; height:70px; }
+
+  /* ---------- ACTION BAR ---------- */
+  .actions{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; padding:8px 4px 14px;}
+  .act{ flex:1; min-width:88px; padding:13px 6px; border:none; border-radius:14px;
+    font-size:14px; font-weight:800; cursor:pointer; color:#fff; transition:.1s;}
+  .act:active{ transform:scale(.95); }
+  .act.fold{ background:linear-gradient(180deg,#ff6b6b,#c0392b); }
+  .act.chaal{ background:linear-gradient(180deg,#56cc7a,#1e8449); }
+  .act.raise{ background:linear-gradient(180deg,#5a9cff,#1f5fc0); }
+  .act.show{ background:linear-gradient(180deg,#ffd166,#d4a017); color:#222;}
+  .act.side{ background:linear-gradient(180deg,#c084fc,#7c3aed); }
+  .act:disabled{ filter:grayscale(.8) brightness(.6); cursor:not-allowed; }
+  .stake-info{ width:100%; text-align:center; font-size:12px; opacity:.85; margin-bottom:2px;}
+
+  /* ---------- TOAST / MODAL ---------- */
+  .toast{ position:fixed; top:18%; left:50%; transform:translateX(-50%);
+    background:rgba(0,0,0,.85); border:1px solid var(--gold); padding:10px 20px;
+    border-radius:14px; font-weight:700; z-index:60; opacity:0; pointer-events:none;
+    transition:.3s; max-width:90vw; text-align:center;}
+  .toast.show{ opacity:1; top:14%; }
+  .modal{ position:fixed; inset:0; background:rgba(0,0,0,.78); display:none;
+    align-items:center; justify-content:center; z-index:80; padding:20px;}
+  .modal.show{ display:flex; }
+  .modal-box{ background:linear-gradient(180deg,#143b1f,#0a2412); border:3px solid var(--gold);
+    border-radius:22px; padding:24px; text-align:center; max-width:380px; width:100%;
+    box-shadow:0 0 40px rgba(255,215,0,.3); animation:pop .3s; }
+  @keyframes pop{ from{transform:scale(.7); opacity:0;} }
+  .modal-box h2{ color:var(--gold); margin-bottom:8px; font-size:26px;}
+  .modal-box p{ opacity:.9; margin-bottom:14px; line-height:1.5;}
+  .result-cards{ display:flex; gap:14px; justify-content:center; margin:14px 0; flex-wrap:wrap;}
+  .result-cards > div{ font-size:11px; opacity:.8; }
+  .reward{ font-size:30px; color:var(--gold); font-weight:900; margin:10px 0;}
+
+  .glow{ animation:glow 1.2s infinite alternate; }
+  @keyframes glow{ to{ box-shadow:0 0 22px var(--gold); } }
+  .hidden{display:none!important;}
+</style>
+</head>
+<body>
+
+<!-- ============ HOME ============ -->
+<section id="home" class="screen active">
+  <div class="suits"><span class="b">♠</span><span class="r">♥</span><span class="r">♦</span><span class="b">♣</span></div>
+  <div>
+    <div class="logo">TEEN PATTI</div>
+    <div class="logo-hindi">ती न प त्ती</div>
+  </div>
+  <div class="coin-bar">🪙 <span id="homeCoins">5000</span> &nbsp;|&nbsp; ⭐ Lv.<span id="homeLevel">1</span></div>
+
+  <button class="menu-btn" onclick="startGame('cpu')">🤖 vs CPU
+    <div class="menu-sub">Play against smart computer AI</div></button>
+  <button class="menu-btn secondary" onclick="startGame('pass')">👥 Pass &amp; Play
+    <div class="menu-sub">Two players on one device</div></button>
+
+  <div class="small-row" style="width:min(360px,88vw)">
+    <button class="menu-btn" onclick="claimDaily()">🎁 Daily Bonus</button>
+    <button class="menu-btn secondary" onclick="showRules()">📖 Rules</button>
+  </div>
+  <div style="font-size:12px;opacity:.6;margin-top:10px">🔥 Win Streak: <span id="streak">0</span> &nbsp; · &nbsp; 🏆 Wins: <span id="totalWins">0</span></div>
+</section>
+
+<!-- ============ TABLE ============ -->
+<section id="table" class="screen">
+  <div class="top-bar">
+    <button class="icon-btn" onclick="confirmExit()">⬅</button>
+    <div class="pot">POT 🪙 <span id="potAmt">0</span></div>
+    <button class="icon-btn" onclick="toggleSound()" id="soundBtn">🔊</button>
+  </div>
+
+  <div class="felt">
+    <!-- CPU / Player 2 -->
+    <div class="player-seat" id="seatTop">
+      <div class="seat-info" id="infoTop"><span class="av">🤖</span><span id="nameTop">CPU</span> · 🪙<span class="chips" id="chipsTop">5000</span></div>
+      <div class="status-tag" id="tagTop"></div>
+      <div class="cards-row" id="cardsTop"></div>
+    </div>
+
+    <div class="pot-center">
+      <div class="chip-stack" id="potChips">💰</div>
+    </div>
+
+    <!-- You / Player 1 -->
+    <div class="player-seat" id="seatBot">
+      <div class="cards-row" id="cardsBot"></div>
+      <div class="status-tag" id="tagBot"></div>
+      <div class="seat-info active" id="infoBot"><span class="av">😎</span><span id="nameBot">You</span> · 🪙<span class="chips" id="chipsBot">5000</span></div>
+    </div>
+  </div>
+
+  <div class="actions" id="actionBar">
+    <div class="stake-info" id="stakeInfo">Current stake: 🪙 <span id="curStake">0</span></div>
+    <button class="act fold" onclick="playerAction('fold')">❌ Fold</button>
+    <button class="act show" id="seeBtn" onclick="seeCards()">👁 See</button>
+    <button class="act chaal" id="chaalBtn" onclick="playerAction('chaal')">✅ Chaal</button>
+    <button class="act raise" id="raiseBtn" onclick="playerAction('raise')">⬆ Raise 2x</button>
+    <button class="act side" id="sideBtn" onclick="playerAction('sideshow')">🔍 Side Show</button>
+    <button class="act show" id="showBtn" onclick="playerAction('show')">🃏 Show</button>
+  </div>
+</section>
+
+<!-- ============ MODAL & TOAST ============ -->
+<div class="modal" id="modal">
+  <div class="modal-box" id="modalBox"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   TEEN PATTI GOLD  —  full game engine
+   ========================================================= */
+const SUITS = ['♠','♥','♦','♣'];
+const RANKS = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+const RANKVAL = {}; RANKS.forEach((r,i)=>RANKVAL[r]=i+2);
+
+// ---------- persistent state ----------
+const store = {
+  coins: 5000, level:1, xp:0, streak:0, wins:0, lastBonus:0, sound:true
+};
+function load(){ try{ Object.assign(store, JSON.parse(localStorage.tp_save||'{}')); }catch(e){} }
+function save(){ localStorage.tp_save = JSON.stringify(store); }
+load();
+
+// ---------- game state ----------
+let G = null;
+const BOOT = 100;          // ante
+let mode = 'cpu';
+
+// ---------- helpers ----------
+function $(id){ return document.getElementById(id); }
+function rnd(n){ return Math.floor(Math.random()*n); }
+function fmt(n){ return n.toLocaleString('en-IN'); }
+
+function vibrate(ms){ if(navigator.vibrate && store.sound) navigator.vibrate(ms); }
+
+// ---------- simple WebAudio beeps ----------
+let AC;
+function beep(freq=440,dur=.08,type='sine',vol=.15){
+  if(!store.sound) return;
+  try{
+    AC = AC || new (window.AudioContext||window.webkitAudioContext)();
+    const o=AC.createOscillator(), g=AC.createGain();
+    o.type=type; o.frequency.value=freq; o.connect(g); g.connect(AC.destination);
+    g.gain.setValueAtTime(vol,AC.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+dur);
+    o.start(); o.stop(AC.currentTime+dur);
+  }catch(e){}
+}
+const sfx = {
+  deal:()=>beep(600,.05,'triangle',.1),
+  chip:()=>beep(880,.06,'square',.12),
+  win:()=>{ beep(660,.1); setTimeout(()=>beep(880,.12),110); setTimeout(()=>beep(1100,.18),240); },
+  lose:()=>{ beep(300,.15,'sawtooth',.12); setTimeout(()=>beep(200,.2,'sawtooth',.12),150); },
+  click:()=>beep(500,.04,'square',.08),
+};
+
+// =========================================================
+//  DECK & HAND EVALUATION
+// =========================================================
+function makeDeck(){
+  const d=[];
+  for(const s of SUITS) for(const r of RANKS) d.push({r,s,v:RANKVAL[r],red:(s==='♥'||s==='♦')});
+  for(let i=d.length-1;i>0;i--){ const j=rnd(i+1); [d[i],d[j]]=[d[j],d[i]]; }
+  return d;
+}
+
+// returns {rank, name, score}  higher score = better
+// rank order: 6 trail,5 pure seq,4 seq,3 color,2 pair,1 high
+function evalHand(cards){
+  const c = [...cards].sort((a,b)=>b.v-a.v);
+  const vals = c.map(x=>x.v);
+  const suits = c.map(x=>x.s);
+  const sameSuit = suits.every(s=>s===suits[0]);
+  // sequence check (A-2-3 special low)
+  let isSeq = (vals[0]-vals[1]===1 && vals[1]-vals[2]===1);
+  let seqHigh = vals[0];
+  // A-2-3
+  if(vals[0]===14 && vals[1]===3 && vals[2]===2){ isSeq=true; seqHigh=3; }
+  const trail = vals[0]===vals[1] && vals[1]===vals[2];
+  const pairIdx = vals[0]===vals[1]?0 : vals[1]===vals[2]?1 : -1;
+
+  let rank, name;
+  if(trail){ rank=6; name='Trail (Teen)'; }
+  else if(isSeq && sameSuit){ rank=5; name='Pure Sequence'; }
+  else if(isSeq){ rank=4; name='Sequence'; }
+  else if(sameSuit){ rank=3; name='Color'; }
+  else if(pairIdx>=0){ rank=2; name='Pair'; }
+  else { rank=1; name='High Card'; }
+
+  // build comparable score
+  let kicker;
+  if(rank===2){
+    const pv = vals[pairIdx]; const other = vals.find((v,i)=>v!==pv) || 0;
+    kicker = pv*100 + other;
+  } else if(isSeq){
+    kicker = seqHigh*10000;
+  } else {
+    kicker = vals[0]*10000 + vals[1]*100 + vals[2];
+  }
+  const score = rank*1e7 + kicker;
+  return {rank,name,score,cards:c};
+}
+
+// compare two evaluated hands (a wins => >0)
+function compareHands(a,b){ return a.score - b.score; }
+
+// =========================================================
+//  GAME FLOW
+// =========================================================
+function startGame(m){
+  mode = m;
+  sfx.click();
+  // check coins
+  if(store.coins < BOOT*2){
+    toast('Not enough coins! Claim daily bonus 🎁');
+    store.coins += 1000; save();
+  }
+  newRound();
+  switchScreen('table');
+}
+
+function newRound(){
+  const deck = makeDeck();
+  G = {
+    deck,
+    stake: BOOT,            // current bet unit (blind value)
+    pot: 0,
+    turn: 0,                // 0 = player(you), 1 = opponent
+    over:false,
+    players:[
+      {id:0,name:mode==='pass'?'Player 1':'You',av:'😎',cards:[deck.pop(),deck.pop(),deck.pop()],
+       seen:false,folded:false,chips:store.coins,isHuman:true,bet:0},
+      {id:1,name:mode==='pass'?'Player 2':'CPU',av:mode==='pass'?'🧑':'🤖',
+       cards:[deck.pop(),deck.pop(),deck.pop()],
+       seen:false,folded:false,chips:mode==='pass'?store.coins:5000,isHuman:(mode==='pass'),bet:0},
+    ],
+    round:0,
+  };
+  // collect boot from both
+  G.players.forEach(p=>{ p.chips-=BOOT; p.bet=BOOT; G.pot+=BOOT; });
+  syncCoins();
+  renderTable();
+  sfx.deal();
+  toast(`New deal! Boot 🪙${BOOT} each`);
+  setActive(0);
+  if(!G.players[0].isHuman) setTimeout(cpuTurn,900); // (rare)
+  updateActions();
+}
+
+function syncCoins(){
+  // human player's chips tracked in store
+  store.coins = G.players[0].chips < 0 ? 0 : G.players[0].chips;
+}
+
+// ---------- rendering ----------
+function renderCard(card,faceUp){
+  if(!faceUp) return `<div class="card back"></div>`;
+  const col = card.red?'red':'black';
+  return `<div class="card ${col}">
+    <div class="tl">${card.r}<br>${card.s}</div>
+    <div class="mid">${card.s}</div>
+    <div class="br">${card.r}<br>${card.s}</div></div>`;
+}
+
+function renderTable(){
+  const me=G.players[0], opp=G.players[1];
+  $('nameBot').textContent=me.name; $('nameTop').textContent=opp.name;
+  $('infoTop').querySelector('.av').textContent=opp.av;
+  $('chipsBot').textContent=fmt(me.chips); $('chipsTop').textContent=fmt(opp.chips);
+  $('potAmt').textContent=fmt(G.pot);
+
+  // my cards: show if seen
+  $('cardsBot').innerHTML = me.cards.map(c=>renderCard(c, me.seen)).join('');
+  // opp cards hidden (unless pass&play and their turn handled separately, or showdown)
+  $('cardsTop').innerHTML = opp.cards.map(c=>renderCard(c, opp.revealed)).join('');
+
+  $('infoBot').classList.toggle('folded',me.folded);
+  $('infoTop').classList.toggle('folded',opp.folded);
+
+  setTag(0); setTag(1);
+}
+
+function setTag(i){
+  const p=G.players[i];
+  const el = i===0?$('tagBot'):$('tagTop');
+  if(p.folded){ el.textContent='FOLDED'; el.className='status-tag tag-fold'; return; }
+  if(p.seen){ el.textContent='SEEN'; el.className='status-tag tag-seen'; }
+  else { el.textContent='BLIND'; el.className='status-tag tag-blind'; }
+}
+
+function setActive(i){
+  G.turn=i;
+  $('infoBot').classList.toggle('active',i===0);
+  $('infoTop').classList.toggle('active',i===1);
+}
+
+// ---------- See cards ----------
+function seeCards(){
+  const me=G.players[G.turn];
+  if(!me.isHuman) return;
+  me.seen=true;
+  sfx.click(); vibrate(20);
+  renderTable();
+  updateActions();
+  toast('Cards revealed — now you play "Seen" 👁');
+}
+
+// =========================================================
+//  BETTING — stake logic
+//  blind player bets = stake ; seen player bets = 2*stake (chaal)
+// =========================================================
+function currentCallAmount(p){
+  // amount needed to "chaal"
+  return p.seen ? G.stake*2 : G.stake;
+}
+
+function updateActions(){
+  const me=G.players[0];
+  const human = G.players[G.turn].isHuman;
+  const showActions = human && !G.over;
+  $('actionBar').style.opacity = showActions?1:.5;
+  $('actionBar').style.pointerEvents = showActions?'auto':'none';
+
+  // See button only if not yet seen
+  $('seeBtn').classList.toggle('hidden', G.players[G.turn].seen);
+  const callAmt = currentCallAmount(G.players[G.turn]);
+  $('curStake').textContent = fmt(callAmt);
+  $('chaalBtn').innerHTML = `✅ Chaal<br><small>🪙${fmt(callAmt)}</small>`;
+  $('raiseBtn').innerHTML = `⬆ Raise<br><small>🪙${fmt(callAmt*2)}</small>`;
+
+  // Show button only meaningful in 2-player when it's a head-to-head (always here)
+  // allow Show after at least 1 round
+  $('showBtn').classList.toggle('hidden', G.round<1);
+  // Side show: only seen vs seen
+  const oppSeen = G.players[1].seen;
+  $('sideBtn').classList.toggle('hidden', !(G.players[G.turn].seen && oppSeen && G.round>=1));
+}
+
+// ---------- player action ----------
+function playerAction(act){
+  if(G.over) return;
+  const i=G.turn; const p=G.players[i];
+  if(!p.isHuman) return;
+  sfx.click();
+
+  if(act==='fold'){ doFold(i); return; }
+  if(act==='show'){ doShow(i); return; }
+  if(act==='sideshow'){ doSideShow(i); return; }
+
+  const callAmt = currentCallAmount(p);
+  let pay = act==='raise'? callAmt*2 : callAmt;
+  if(p.chips < pay){ toast("Not enough coins for that!"); return; }
+
+  // place bet
+  p.chips -= pay; G.pot += pay; p.bet += pay;
+  G.round++;
+  sfx.chip(); vibrate(15);
+
+  // if raised, increase stake unit. New blind value = pay (if seen, blind-equiv = pay/2)
+  if(act==='raise'){
+    G.stake = p.seen ? pay/2 : pay;
+  }
+  syncCoins(); renderTable();
+  flashBet(i,pay);
+  nextTurn();
+}
+
+function flashBet(i,amt){
+  const el = i===0?$('tagBot'):$('tagTop');
+  // briefly show bet
+  const prev = el.textContent, prevC=el.className;
+  el.textContent = `BET 🪙${fmt(amt)}`; el.className='status-tag tag-bet';
+  setTimeout(()=>{ if(!G.over){ setTag(i); } },800);
+}
+
+function nextTurn(){
+  if(G.over) return;
+  setActive(G.turn===0?1:0);
+  updateActions();
+  if(!G.players[G.turn].isHuman){
+    setTimeout(cpuTurn, 1000 + rnd(700));
+  } else {
+    if(G.players[G.turn].folded) nextTurn();
+  }
+}
+
+// ---------- fold ----------
+function doFold(i){
+  G.players[i].folded=true;
+  vibrate(30);
+  renderTable();
+  const winner = i===0?1:0;
+  endRound(winner,'fold');
+}
+
+// =========================================================
+//  SHOW (final compare)
+// =========================================================
+function doShow(i){
+  const p=G.players[i], opp=G.players[i===0?1:0];
+  // show costs current call amount
+  const cost = currentCallAmount(p);
+  if(p.chips<cost){ toast("Not enough to Show!"); return; }
+  p.chips-=cost; G.pot+=cost; syncCoins();
+  // reveal both
+  G.players.forEach(x=>x.revealed=true);
+  renderTable();
+  const a=evalHand(p.cards), b=evalHand(opp.cards);
+  const cmp=compareHands(a,b);
+  let winner = cmp>0?i : cmp<0?opp.id : i; // tie -> the one who didn't show? standard: player who paid loses tie; give to opp
+  if(cmp===0) winner = opp.id;
+  endRound(winner,'show',{a,b});
+}
+
+// ---------- side show (compare with opponent, loser folds) ----------
+function doSideShow(i){
+  const p=G.players[i], opp=G.players[i===0?1:0];
+  if(!opp.seen){ toast('Side Show only vs a SEEN player'); return; }
+  const cost = currentCallAmount(p);
+  if(p.chips<cost){ toast("Not enough for Side Show!"); return; }
+  p.chips-=cost; G.pot+=cost; syncCoins(); renderTable();
+
+  // opponent (CPU) decides to accept or decline
+  let accept = true;
+  if(!opp.isHuman){
+    const strength = evalHand(opp.cards).score;
+    accept = strength > 4.5e7 || Math.random()<.5; // weak hand may decline
+  }
+  if(!accept){
+    toast(`${opp.name} declined Side Show 🚫`);
+    nextTurn(); return;
+  }
+  const a=evalHand(p.cards), b=evalHand(opp.cards);
+  const cmp=compareHands(a,b);
+  const loser = cmp>=0 ? opp.id : i;   // requester wins ties in sideshow (common rule)
+  toast(`Side Show: ${G.players[loser].name} folds!`);
+  setTimeout(()=>{
+    G.players[loser].folded=true; renderTable();
+    const winner=loser===0?1:0;
+    if(G.players[winner].folded) return;
+    // if both still in (only one folds) continue, but 2-player => round ends
+    endRound(winner,'sideshow');
+  },1200);
+}
+
+// =========================================================
+//  CPU AI
+// =========================================================
+function cpuTurn(){
+  if(G.over) return;
+  const cpu=G.players[G.turn]; const human=G.players[G.turn===0?1:0];
+  if(cpu.folded){ nextTurn(); return; }
+
+  // decide to see cards (after a couple rounds, or randomly)
+  if(!cpu.seen && (G.round>=2 || Math.random()<.4)){
+    cpu.seen=true; setTag(G.turn);
+    toast(`${cpu.name} sees the cards 👁`);
+  }
+
+  const hand = evalHand(cpu.cards);
+  const callAmt = currentCallAmount(cpu);
+  let strength = hand.rank; // 1..6
+
+  // pot-based caution
+  const potBig = G.pot > cpu.chips*0.5;
+  let roll = Math.random();
+
+  // Decision tree
+  let action='chaal';
+
+  if(!cpu.seen){
+    // blind play — bluff-ish
+    if(roll<0.08) action='fold';
+    else if(roll<0.22 && cpu.chips>callAmt*2) action='raise';
+    else action='chaal';
+  } else {
+    if(strength>=5){                       // monster: pure seq / trail
+      action = (roll<0.7 && cpu.chips>callAmt*2) ? 'raise' : (G.round>=2?'show':'chaal');
+    } else if(strength>=3){                 // good: seq / color
+      if(roll<0.4 && cpu.chips>callAmt*2) action='raise';
+      else if(G.round>=3 && roll<0.5) action='show';
+      else action='chaal';
+    } else if(strength===2){                // pair
+      if(potBig && roll<0.3) action='fold';
+      else if(roll<0.15) action='raise';
+      else action='chaal';
+    } else {                                // high card — mostly fold/bluff
+      if(roll<0.45) action='fold';
+      else if(roll<0.55) action='raise';    // bluff
+      else action='chaal';
+    }
+  }
+
+  // safety: can't afford
+  if(action==='raise' && cpu.chips < callAmt*2) action='chaal';
+  if((action==='chaal'||action==='show') && cpu.chips < callAmt) action='fold';
+
+  // execute
+  if(action==='fold'){ toast(`${cpu.name} folds ❌`); doFold(G.turn); return; }
+  if(action==='show'){
+    toast(`${cpu.name} calls SHOW 🃏`);
+    // pay & compare
+    cpu.chips-=callAmt; G.pot+=callAmt; syncCoins();
+    G.players.forEach(x=>x.revealed=true); renderTable();
+    const a=evalHand(cpu.cards), b=evalHand(human.cards);
+    const cmp=compareHands(a,b);
+    let winner = cmp>0?cpu.id : cmp<0?human.id : human.id;
+    endRound(winner,'show',{a:b,b:a}); // order for display
+    return;
+  }
+  // chaal or raise
+  let pay = action==='raise'?callAmt*2:callAmt;
+  cpu.chips-=pay; G.pot+=pay; cpu.bet+=pay; G.round++;
+  if(action==='raise') G.stake = cpu.seen?pay/2:pay;
+  sfx.chip(); syncCoins(); renderTable(); flashBet(G.turn,pay);
+  toast(`${cpu.name} ${action==='raise'?'raises ⬆':'plays chaal ✅'}`);
+  nextTurn();
+}
+
+// =========================================================
+//  END ROUND
+// =========================================================
+function endRound(winnerId,reason,hands){
+  if(G.over) return;
+  G.over=true;
+  const winner=G.players[winnerId], loser=G.players[winnerId===0?1:0];
+  winner.chips += G.pot;
+
+  // stats (only when human plays)
+  if(winnerId===0){
+    store.wins++; store.streak++; store.xp+=20;
+    sfx.win(); vibrate([40,40,80]);
+  } else {
+    store.streak=0; store.xp+=5;
+    sfx.lose(); vibrate(120);
+  }
+  // level up
+  while(store.xp>=store.level*100){ store.xp-=store.level*100; store.level++; }
+  syncCoins(); save();
+  renderTable();
+  showResult(winnerId,reason,hands);
+}
+
+function handLabel(h){
+  return h? `<div><b style="color:var(--gold)">${h.name}</b><br>${h.cards.map(c=>(c.red?'🔴':'⚫')+c.r+c.s).join(' ')}</div>` : '';
+}
+
+function showResult(winnerId,reason,hands){
+  const won = winnerId===0;
+  const winner=G.players[winnerId];
+  const reasonTxt = {fold:'Opponent folded',show:'Showdown',sideshow:'Side Show'}[reason]||'';
+  let cardsHtml='';
+  if(hands){
+    // hands.a = winner-ish display? we passed {a,b} = (player who showed, opp)
+    cardsHtml = `<div class="result-cards">
+        <div>${G.players[0].name}${handLabel(evalHand(G.players[0].cards))}</div>
+        <div>${G.players[1].name}${handLabel(evalHand(G.players[1].cards))}</div>
+      </div>`;
+  }
+  const box=$('modalBox');
+  box.innerHTML = `
+    <h2>${won?'🎉 You Win!':(mode==='pass'? winner.name+' Wins!':'😞 You Lose')}</h2>
+    <p>${reasonTxt}</p>
+    ${cardsHtml}
+    <div class="reward">${won?'+':''}🪙 ${fmt(won?G.pot:0)}</div>
+    ${won?`<p style="color:#7CFC00">🔥 Streak: ${store.streak}</p>`:''}
+    <button class="menu-btn" style="margin-top:6px" onclick="nextDeal()">▶ Next Deal</button>
+    <button class="menu-btn secondary" style="margin-top:10px" onclick="goHome()">🏠 Home</button>
+  `;
+  refreshHome();
+  setTimeout(()=>$('modal').classList.add('show'),700);
+}
+
+function nextDeal(){
+  $('modal').classList.remove('show');
+  if(store.coins < BOOT){
+    toast('Out of coins! Here are 1000 free 🎁');
+    store.coins=Math.max(store.coins,0)+1000; save();
+  }
+  // sync chips back for fresh round
+  newRound();
+}
+
+// =========================================================
+//  HOME / NAV / MISC
+// =========================================================
+function switchScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  $(id).classList.add('active');
+}
+function goHome(){ $('modal').classList.remove('show'); refreshHome(); switchScreen('home'); }
+function confirmExit(){
+  openModal(`<h2>Leave table?</h2><p>Your current bet stays in the pot.</p>
+    <button class="menu-btn" onclick="goHome()">🏠 Yes, Home</button>
+    <button class="menu-btn secondary" style="margin-top:10px" onclick="closeModal()">↩ Stay</button>`);
+}
+
+function refreshHome(){
+  $('homeCoins').textContent=fmt(store.coins);
+  $('homeLevel').textContent=store.level;
+  $('streak').textContent=store.streak;
+  $('totalWins').textContent=store.wins;
+}
+
+function toast(msg){
+  const t=$('toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),1900);
+}
+function openModal(html){ $('modalBox').innerHTML=html; $('modal').classList.add('show'); }
+function closeModal(){ $('modal').classList.remove('show'); }
+
+function toggleSound(){
+  store.sound=!store.sound; save();
+  $('soundBtn').textContent=store.sound?'🔊':'🔇';
+  if(store.sound) sfx.click();
+}
+
+// ---------- daily bonus ----------
+function claimDaily(){
+  const now=Date.now(); const day=24*3600*1000;
+  if(now - store.lastBonus < day){
+    const left = day-(now-store.lastBonus);
+    const h=Math.floor(left/3600000), m=Math.floor(left%3600000/60000);
+    openModal(`<h2>🎁 Daily Bonus</h2><p>Already claimed today!</p>
+      <p>Come back in <b>${h}h ${m}m</b></p>
+      <button class="menu-btn" onclick="closeModal()">OK</button>`);
+    return;
+  }
+  const bonus = 1000 + store.level*200;
+  store.coins += bonus; store.lastBonus=now; save(); refreshHome(); sfx.win();
+  openModal(`<h2>🎁 Daily Bonus!</h2><div class="reward">+🪙 ${fmt(bonus)}</div>
+    <p>Come back tomorrow for more 🔥</p>
+    <button class="menu-btn" onclick="closeModal()">Collect</button>`);
+}
+
+// ---------- rules ----------
+function showRules(){
+  openModal(`<h2 style="font-size:22px">📖 How to Play</h2>
+   <div style="text-align:left;font-size:13px;line-height:1.7;max-height:55vh;overflow:auto">
+   <b>Goal:</b> Have the best 3-card hand or be the last one standing.<br><br>
+   <b>Hand Ranking (high→low):</b><br>
+   🏆 Trail (3 same) → A A A best<br>
+   🎯 Pure Sequence (run, same suit)<br>
+   ➡️ Sequence (run, mixed suits)<br>
+   🎨 Color (same suit)<br>
+   👥 Pair<br>
+   🔢 High Card<br><br>
+   <b>Blind:</b> Play without seeing cards (cheaper bets).<br>
+   <b>Seen:</b> View cards, but pay 2× to play (Chaal).<br>
+   <b>Raise:</b> Double the current stake.<br>
+   <b>Side Show:</b> Privately compare with opponent — loser folds.<br>
+   <b>Show:</b> Final reveal & compare hands.<br>
+   </div>
+   <button class="menu-btn" style="margin-top:12px" onclick="closeModal()">Got it!</button>`);
+}
+
+// ---------- init ----------
+$('soundBtn').textContent = store.sound?'🔊':'🔇';
+refreshHome();
+// resume audio on first touch (mobile policy)
+document.addEventListener('touchstart',()=>{ if(AC&&AC.state==='suspended')AC.resume(); },{once:true});
+document.addEventListener('click',()=>{ if(AC&&AC.state==='suspended')AC.resume(); },{once:true});
+</script>
+</body>
+</html>
