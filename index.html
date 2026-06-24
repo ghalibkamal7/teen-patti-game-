@@ -1032,7 +1032,7 @@ async function loginFacebook(){
   if(!IS_FB_READY){showAuthErr('Firebase not configured. Use Guest mode.');return;}
   try{
     let prov=new firebase.auth.FacebookAuthProvider();
-    let res = await fbAuth.signInWithPopup(prov);
+    let res=await fbAuth.signInWithPopup(prov);
     onLoginSuccess(res.user);
   }catch(e){showAuthErr('Facebook login failed. Make sure FB App is configured.');}
 }
