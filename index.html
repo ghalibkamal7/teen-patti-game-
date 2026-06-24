@@ -703,7 +703,7 @@ const FB_CFG = {
       https://YOUR_PROJECT.firebaseapp.com/__/auth/handler
    ─────────────────────────────────────────────────── */
 
-const IS_FB_READY = FB_CFG.apiKey !== "AIzaSyDdjQcBiF3pgQigyfPjijdlGY3a811X-bE";
+const IS_FB_READY = FB_CFG.apiKey !== "YoUR_API_KEY";
 
 let fbApp, fbAuth, fbDB;
 if (IS_FB_READY) {
@@ -713,9 +713,6 @@ if (IS_FB_READY) {
     fbDB   = firebase.database();
   } catch(e) { console.warn('Firebase init failed:', e); }
 }
-firebase.auth().onAuthStateChanged(function(user) {
-    if (user) {
-        onLoginSuccess(user);
     }
 });
 /* ════════════════════════════════════════
