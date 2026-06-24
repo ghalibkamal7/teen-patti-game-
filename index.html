@@ -1032,7 +1032,7 @@ async function loginFacebook(){
   if(!IS_FB_READY){showAuthErr('Firebase not configured. Use Guest mode.');return;}
   try{
     let prov=new firebase.auth.FacebookAuthProvider();
-    let res=await fbAuth.signInWithPopup(prov);
+    let res = await fbAuth.signInWithRedirect(prov);
     onLoginSuccess(res.user);
   }catch(e){showAuthErr('Facebook login failed. Make sure FB App is configured.');}
 }
@@ -1046,6 +1046,14 @@ function loginGuest(){
 
 function onLoginSuccess(user){
   ME=user;
+  
+  if(fbDB){
+    fbDB.ref("users/" + user.uid).update({
+        name: user.displayName || "Player",
+        email: user.email || "",
+        photo: user.photoURL || ""
+    });
+}
   load();
   G.p[0].name=user.displayName||'Player';
   G.p[0].photo=user.photoURL||null;
