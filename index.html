@@ -1670,11 +1670,4 @@ if(fbDB&&ME&&!ME.isGuest){
 </body>
 </html>"""
 
-with open('/home/claude/index.html', 'w', encoding='utf-8') as f:
-    f.write(html)
-
-import os
-size = os.path.getsize('/home/claude/index.html')
-lines = html.count('\n')
-print(f"Written: {lines} lines, {size//1024}KB")
 
