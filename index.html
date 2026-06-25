@@ -1020,7 +1020,7 @@ async function loginGoogle(){
   if(!IS_FB_READY){showAuthErr('Firebase not configured. Use Guest mode.');return;}
   try{
     let prov=new firebase.auth.GoogleAuthProvider();
-    let res=await fbAuth.signInWithRedirect(prov);
+    let fbAuth.signInWithRedirect(prov);
   }catch(e){showAuthErr('Google login failed: '+e.message);}
 }
 
