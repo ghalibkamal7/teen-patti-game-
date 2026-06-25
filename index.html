@@ -1,5 +1,4 @@
-
-<!DOCTYPE html>
+html = r"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -10,388 +9,586 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap');
-:root{
-  --bg1:#0c3320;--bg2:#050f08;--gold:#f0c040;--gold2:#c8960c;
-  --goldG:rgba(240,192,64,.3);--red:#e74c3c;--blue:#3498db;--green:#2ecc71;
-  --card:#fffef5;--text:#f5e6c0;--dim:#7a6a45;
-}
+:root{--g1:#0c3320;--g2:#050f08;--gd:#f0c040;--gd2:#c8960c;--gdg:rgba(240,192,64,.3);
+  --rd:#e74c3c;--bl:#3498db;--gr:#2ecc71;--cd:#fffef5;--tx:#f5e6c0;--dm:#7a6a45;}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-body{
-  background:radial-gradient(ellipse at 50% 20%,#1a5c38 0%,#0a2a1a 55%,#030d07 100%);
-  font-family:'Inter',sans-serif;color:var(--text);min-height:100vh;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  overflow:hidden;user-select:none;
-}
-/* ═══ BRAND BAR ═══ */
-.brand{
-  position:fixed;top:0;left:0;right:0;z-index:200;pointer-events:none;
-  display:flex;align-items:center;justify-content:center;
-  padding:8px 0 7px;
-  background:linear-gradient(90deg,transparent,rgba(0,0,0,.65),transparent);
-  border-bottom:1px solid rgba(240,192,64,.12);
-}
-.brand span{
-  font-family:'Playfair Display',serif;font-size:13px;letter-spacing:3px;
-  background:linear-gradient(90deg,var(--dim),var(--gold),var(--dim));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  text-transform:uppercase;
-}
-/* ═══ SCREENS ═══ */
-.scr{display:none;width:100%;max-width:480px;padding:54px 15px 15px;
-  flex-direction:column;align-items:center;gap:12px;}
+body{background:radial-gradient(ellipse at 50% 20%,#1a5c38,#0a2a1a 55%,#030d07);
+  font-family:'Inter',sans-serif;color:var(--tx);min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+  overflow:hidden;user-select:none;}
+/* BRAND */
+.brand{position:fixed;top:0;left:0;right:0;z-index:300;pointer-events:none;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:7px 14px;background:linear-gradient(90deg,transparent,rgba(0,0,0,.7),transparent);
+  border-bottom:1px solid rgba(240,192,64,.1);}
+.brand-name{font-family:'Playfair Display',serif;font-size:12px;letter-spacing:3px;
+  background:linear-gradient(90deg,var(--dm),var(--gd),var(--dm));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;text-transform:uppercase;}
+.brand-chips{font-size:12px;color:var(--gd);font-weight:700;}
+/* SCREENS */
+.scr{display:none;width:100%;max-width:480px;padding:54px 14px 14px;
+  flex-direction:column;align-items:center;gap:11px;min-height:100vh;overflow-y:auto;}
 .scr.on{display:flex;}
-/* ═══ AUTH ═══ */
-.logo{font-family:'Playfair Display',serif;font-size:60px;font-weight:900;
-  background:linear-gradient(135deg,#f0c040 0%,#fff8d0 45%,#c8960c 100%);
+/* AUTH */
+.auth-logo{font-family:'Playfair Display',serif;font-size:62px;font-weight:900;
+  background:linear-gradient(135deg,#f0c040,#fff8d0 45%,#c8960c);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
   filter:drop-shadow(0 0 24px rgba(240,192,64,.4));line-height:1;text-align:center;}
-.suits{font-size:20px;letter-spacing:8px;animation:sp 3s ease-in-out infinite;text-align:center;}
-@keyframes sp{0%,100%{opacity:.5}50%{opacity:1}}
-.sub-logo{font-size:11px;letter-spacing:4px;color:var(--dim);text-transform:uppercase;text-align:center;}
-.login-box{width:100%;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.07);
-  border-radius:20px;padding:22px 18px;display:flex;flex-direction:column;gap:10px;}
-.login-lbl{text-align:center;font-size:12px;color:var(--dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
-.soc-btn{width:100%;padding:13px 18px;border-radius:14px;border:none;
-  display:flex;align-items:center;gap:12px;
-  font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;}
-.soc-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.4);}
-.btn-gg{background:#fff;color:#1a1a1a;}
-.btn-fb{background:#1877f2;color:#fff;}
-.btn-guest{background:rgba(255,255,255,.07);color:var(--text);border:1px solid rgba(255,255,255,.12);font-size:13px;}
-.or-div{display:flex;align-items:center;gap:10px;color:var(--dim);font-size:11px;}
-.or-div::before,.or-div::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.1);}
-/* ═══ LOBBY ═══ */
-.user-row{display:flex;align-items:center;gap:12px;width:100%;
-  background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:12px 15px;}
-.uav{width:46px;height:46px;border-radius:50%;border:2px solid rgba(240,192,64,.4);
-  display:flex;align-items:center;justify-content:center;font-size:22px;
-  background:rgba(255,255,255,.08);overflow:hidden;flex-shrink:0;}
-.uav img{width:100%;height:100%;object-fit:cover;}
-.un{font-weight:700;font-size:15px;} .us{font-size:11px;color:var(--dim);}
-.uchips{margin-left:auto;text-align:right;}
-.uchips-n{font-size:20px;font-weight:700;color:var(--gold);}
-.uchips-l{font-size:9px;color:var(--dim);text-transform:uppercase;}
+.suits{font-size:18px;letter-spacing:8px;text-align:center;opacity:.7;}
+.auth-sub{font-size:10px;letter-spacing:4px;color:var(--dm);text-transform:uppercase;text-align:center;}
+.lbox{width:100%;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.07);
+  border-radius:20px;padding:20px 16px;display:flex;flex-direction:column;gap:10px;}
+.lbox-t{text-align:center;font-size:11px;color:var(--dm);text-transform:uppercase;letter-spacing:1px;}
+.sbtn{width:100%;padding:13px 16px;border-radius:13px;border:none;
+  display:flex;align-items:center;gap:11px;font-family:'Inter',sans-serif;
+  font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;}
+.sbtn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.4);}
+.sbtn-g{background:#fff;color:#1a1a1a;} .sbtn-f{background:#1877f2;color:#fff;}
+.sbtn-x{background:rgba(255,255,255,.07);color:var(--tx);border:1px solid rgba(255,255,255,.12);font-size:13px;}
+.ord{display:flex;align-items:center;gap:10px;color:var(--dm);font-size:11px;}
+.ord::before,.ord::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.1);}
+/* HOME */
+.profile-card{width:100%;display:flex;align-items:center;gap:12px;
+  background:rgba(0,0,0,.35);border:1px solid rgba(240,192,64,.15);
+  border-radius:16px;padding:12px 14px;}
+.av{width:46px;height:46px;border-radius:50%;border:2px solid rgba(240,192,64,.4);
+  display:flex;align-items:center;justify-content:center;font-size:20px;
+  background:rgba(255,255,255,.08);overflow:hidden;flex-shrink:0;position:relative;}
+.av img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.av-online{position:absolute;bottom:1px;right:1px;width:10px;height:10px;
+  border-radius:50%;background:var(--gr);border:2px solid rgba(5,15,8,.9);}
+.pname{font-weight:700;font-size:15px;}
+.psub{font-size:11px;color:var(--dm);}
+.chips-badge{margin-left:auto;text-align:right;}
+.chips-n{font-size:22px;font-weight:700;color:var(--gd);}
+.chips-l{font-size:9px;color:var(--dm);text-transform:uppercase;}
+/* Ludo-style grid */
+.home-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;}
+.hcard{background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.07);
+  border-radius:18px;padding:18px 12px;text-align:center;cursor:pointer;
+  transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:8px;}
+.hcard:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,.4);}
+.hcard:active{transform:scale(.97);}
+.hcard.gold{border-color:rgba(240,192,64,.3);background:rgba(240,192,64,.08);}
+.hcard.blue{border-color:rgba(52,152,219,.3);background:rgba(52,152,219,.08);}
+.hcard.purple{border-color:rgba(155,89,182,.3);background:rgba(155,89,182,.08);}
+.hcard.green{border-color:rgba(46,204,113,.3);background:rgba(46,204,113,.08);}
+.hcard-ico{font-size:36px;}.hcard-t{font-weight:700;font-size:14px;}
+.hcard-s{font-size:10px;color:var(--dm);}
 .stat-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;width:100%;}
 .sbox{background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.06);
-  border-radius:12px;padding:10px;text-align:center;}
-.sbox-n{font-size:20px;font-weight:700;color:var(--gold);}
-.sbox-l{font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
-.mode-btn{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(240,192,64,.15);
-  border-radius:16px;padding:15px 18px;cursor:pointer;text-align:left;transition:all .2s;
-  display:flex;align-items:center;gap:13px;color:var(--text);}
-.mode-btn:hover{background:rgba(240,192,64,.09);border-color:rgba(240,192,64,.4);
-  transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.3);}
-.mode-btn.dis{opacity:.4;cursor:not-allowed;pointer-events:none;}
-.mc-ico{font-size:28px;flex-shrink:0;}
-.mode-btn h3{color:var(--gold);font-size:15px;margin-bottom:2px;}
-.mode-btn p{color:var(--dim);font-size:11px;}
-.daily-btn{width:100%;padding:11px;border:1px solid rgba(46,204,113,.35);border-radius:14px;
-  background:rgba(46,204,113,.08);color:#2ecc71;font-size:13px;font-weight:600;
+  border-radius:12px;padding:9px;text-align:center;}
+.sbox-n{font-size:19px;font-weight:700;color:var(--gd);}
+.sbox-l{font-size:9px;color:var(--dm);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+.daily{width:100%;padding:11px;border:1px solid rgba(46,204,113,.35);border-radius:14px;
+  background:rgba(46,204,113,.08);color:var(--gr);font-size:13px;font-weight:600;
   cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;}
-.daily-btn:hover:not(:disabled){background:rgba(46,204,113,.18);transform:translateY(-1px);}
-.daily-btn:disabled{opacity:.4;cursor:not-allowed;}
-/* ═══ ONLINE ═══ */
-.tabs{display:flex;gap:0;width:100%;background:rgba(0,0,0,.3);
-  border-radius:14px;padding:4px;border:1px solid rgba(255,255,255,.06);}
-.tab{flex:1;padding:10px;border:none;border-radius:10px;
-  font-family:'Inter',sans-serif;font-size:13px;font-weight:600;
-  cursor:pointer;transition:all .2s;background:transparent;color:var(--dim);}
-.tab.on{background:rgba(240,192,64,.15);color:var(--gold);}
-.panel{width:100%;display:flex;flex-direction:column;gap:10px;}
-.rinput{width:100%;padding:15px 18px;border:2px solid rgba(240,192,64,.25);
-  border-radius:14px;background:rgba(0,0,0,.3);color:var(--text);
-  font-size:26px;font-weight:700;font-family:'Playfair Display',serif;
+.daily:hover:not(:disabled){background:rgba(46,204,113,.18);transform:translateY(-1px);}
+.daily:disabled{opacity:.4;cursor:not-allowed;}
+/* ONLINE HUB */
+.hub-tabs{display:flex;width:100%;background:rgba(0,0,0,.3);border-radius:13px;padding:3px;
+  border:1px solid rgba(255,255,255,.06);}
+.htab{flex:1;padding:9px 4px;border:none;border-radius:10px;
+  font-family:'Inter',sans-serif;font-size:12px;font-weight:600;
+  cursor:pointer;transition:all .2s;background:transparent;color:var(--dm);}
+.htab.on{background:rgba(240,192,64,.15);color:var(--gd);}
+.hub-panel{width:100%;display:flex;flex-direction:column;gap:10px;}
+.code-box{width:100%;text-align:center;background:rgba(0,0,0,.35);
+  border:2px dashed rgba(240,192,64,.4);border-radius:16px;padding:18px;}
+.code-lbl{font-size:10px;color:var(--dm);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;}
+.code-val{font-family:'Playfair Display',serif;font-size:40px;font-weight:700;
+  color:var(--gd);letter-spacing:8px;text-shadow:0 0 30px rgba(240,192,64,.4);}
+.code-sub{font-size:11px;color:var(--dm);margin-top:6px;}
+.share-row{display:flex;gap:8px;width:100%;}
+.shbtn{flex:1;padding:11px;border:none;border-radius:12px;font-size:12px;font-weight:600;
+  cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;}
+.shbtn:hover{transform:translateY(-2px);}
+.sh-copy{background:rgba(255,255,255,.09);color:var(--tx);border:1px solid rgba(255,255,255,.12);}
+.sh-wa{background:#25d366;color:#fff;}
+.rinput{width:100%;padding:14px 16px;border:2px solid rgba(240,192,64,.25);
+  border-radius:13px;background:rgba(0,0,0,.3);color:var(--tx);
+  font-size:24px;font-weight:700;font-family:'Playfair Display',serif;
   text-align:center;letter-spacing:8px;text-transform:uppercase;outline:none;}
 .rinput:focus{border-color:rgba(240,192,64,.6);}
 .rinput::placeholder{font-size:13px;letter-spacing:2px;font-family:'Inter',sans-serif;font-weight:400;}
-.code-box{width:100%;text-align:center;
-  background:rgba(0,0,0,.35);border:2px dashed rgba(240,192,64,.4);
-  border-radius:16px;padding:20px;}
-.code-lbl{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;}
-.code-val{font-family:'Playfair Display',serif;font-size:42px;font-weight:700;
-  color:var(--gold);letter-spacing:10px;text-shadow:0 0 30px rgba(240,192,64,.4);}
-.code-sub{font-size:11px;color:var(--dim);margin-top:6px;}
-.share-row{display:flex;gap:8px;width:100%;}
-.share-btn{flex:1;padding:11px;border:none;border-radius:12px;font-size:12px;font-weight:600;
-  cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;}
-.share-btn:hover{transform:translateY(-2px);}
-.btn-copy{background:rgba(255,255,255,.09);color:var(--text);border:1px solid rgba(255,255,255,.12);}
-.btn-wa{background:#25d366;color:#fff;}
-.waiting-spin{width:50px;height:50px;border-radius:50%;margin:0 auto;
-  border:3px solid rgba(240,192,64,.2);border-top-color:var(--gold);
+/* Quick match */
+.qm-status{text-align:center;padding:20px;color:var(--dm);font-size:13px;}
+.spinner{width:48px;height:48px;border-radius:50%;margin:0 auto 14px;
+  border:3px solid rgba(240,192,64,.2);border-top-color:var(--gd);
   animation:spin .8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
-/* ═══ GAME ═══ */
+/* FRIENDS */
+.friend-row{width:100%;display:flex;align-items:center;gap:11px;
+  background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.06);
+  border-radius:13px;padding:11px 13px;}
+.fr-info{flex:1;}
+.fr-name{font-weight:600;font-size:14px;}
+.fr-sub{font-size:11px;color:var(--dm);}
+.fr-status{font-size:10px;padding:3px 9px;border-radius:20px;}
+.fr-online{background:rgba(46,204,113,.2);color:var(--gr);}
+.fr-offline{background:rgba(255,255,255,.07);color:var(--dm);}
+.fr-btn{padding:7px 14px;border:none;border-radius:10px;font-size:12px;font-weight:600;
+  cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;}
+.fr-inv{background:rgba(240,192,64,.2);color:var(--gd);}
+.fr-add{background:rgba(52,152,219,.2);color:#7fb3d3;}
+.fr-acc{background:rgba(46,204,113,.2);color:var(--gr);}
+.search-box{width:100%;padding:12px 14px;border:1px solid rgba(255,255,255,.1);
+  border-radius:13px;background:rgba(0,0,0,.3);color:var(--tx);
+  font-family:'Inter',sans-serif;font-size:14px;outline:none;}
+.search-box:focus{border-color:rgba(240,192,64,.4);}
+.search-box::placeholder{color:var(--dm);}
+/* LEADERBOARD */
+.lb-row{width:100%;display:flex;align-items:center;gap:11px;
+  background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.05);
+  border-radius:13px;padding:10px 13px;}
+.lb-rank{width:28px;font-size:16px;text-align:center;font-weight:700;color:var(--gd);}
+.lb-name{flex:1;font-weight:600;font-size:13px;}
+.lb-chips{font-size:14px;font-weight:700;color:var(--gd);}
+/* GAME */
 #gameScr{max-width:520px;padding:46px 10px 10px;gap:8px;}
 .topbar{width:100%;display:flex;align-items:center;justify-content:space-between;
-  background:rgba(0,0,0,.35);border-radius:14px;padding:8px 14px;
+  background:rgba(0,0,0,.35);border-radius:13px;padding:7px 13px;
   border:1px solid rgba(255,255,255,.06);}
 .phud{text-align:center;}
-.phud-lbl{font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:1px;}
-.phud-chips{font-size:18px;font-weight:700;color:var(--gold);}
-.phud-name{font-size:11px;color:var(--dim);max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.phud-n{font-size:10px;color:var(--dm);max-width:75px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.phud-c{font-size:17px;font-weight:700;color:var(--gd);}
+.phud-l{font-size:9px;color:var(--dm);}
 .pot-ring{display:flex;flex-direction:column;align-items:center;justify-content:center;
-  width:68px;height:68px;border-radius:50%;background:rgba(0,0,0,.4);
-  border:2px solid rgba(240,192,64,.4);box-shadow:0 0 20px rgba(240,192,64,.2);transition:all .3s;}
+  width:66px;height:66px;border-radius:50%;background:rgba(0,0,0,.4);
+  border:2px solid rgba(240,192,64,.4);box-shadow:0 0 20px rgba(240,192,64,.2);}
 .pot-ring.bump{animation:bump .35s ease;}
 @keyframes bump{0%{transform:scale(1)}50%{transform:scale(1.18)}100%{transform:scale(1)}}
-.pot-n{font-size:15px;font-weight:700;color:var(--gold);}
-.pot-l{font-size:8px;color:var(--dim);text-transform:uppercase;}
+.pot-n{font-size:14px;font-weight:700;color:var(--gd);}.pot-l{font-size:8px;color:var(--dm);text-transform:uppercase;}
 .pzone{width:100%;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.06);
-  border-radius:16px;padding:11px 13px;transition:all .3s;}
-.pzone.active{border-color:rgba(240,192,64,.45);background:rgba(240,192,64,.06);
-  box-shadow:0 0 18px rgba(240,192,64,.12);}
+  border-radius:15px;padding:10px 12px;transition:all .3s;}
+.pzone.active{border-color:rgba(240,192,64,.45);background:rgba(240,192,64,.06);box-shadow:0 0 18px rgba(240,192,64,.12);}
 .pzone.fold{opacity:.45;}
-.ph{display:flex;align-items:center;gap:10px;margin-bottom:9px;}
-.pav{width:40px;height:40px;border-radius:50%;border:2px solid rgba(240,192,64,.25);
-  display:flex;align-items:center;justify-content:center;font-size:18px;
+.ph{display:flex;align-items:center;gap:9px;margin-bottom:9px;}
+.pav2{width:38px;height:38px;border-radius:50%;border:2px solid rgba(240,192,64,.25);
+  display:flex;align-items:center;justify-content:center;font-size:17px;
   background:rgba(255,255,255,.08);overflow:hidden;flex-shrink:0;position:relative;}
-.pav img{width:100%;height:100%;object-fit:cover;}
-.pav.think::after{content:'💭';font-size:12px;position:absolute;top:-6px;right:-6px;
+.pav2 img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.pav2.think::after{content:'💭';font-size:12px;position:absolute;top:-6px;right:-6px;
   animation:thk .5s ease infinite alternate;}
 @keyframes thk{from{transform:scale(1)}to{transform:scale(1.2)}}
-.pname{font-weight:700;font-size:14px;}
-.pchips{font-size:11px;color:var(--dim);}
-.pst{margin-left:auto;font-size:10px;padding:3px 9px;border-radius:20px;
-  background:rgba(255,255,255,.07);color:var(--dim);white-space:nowrap;}
-.pst.turn{background:rgba(240,192,64,.2);color:var(--gold);font-weight:600;}
-.pst.fold{background:rgba(231,76,60,.18);color:#e74c3c;}
-.pst.think{background:rgba(52,152,219,.18);color:#7fb3d3;}
-.cards-row{display:flex;gap:7px;justify-content:center;min-height:88px;align-items:center;}
-/* CARDS */
-.card{width:58px;height:84px;border-radius:8px;background:var(--card);
+.pn2{font-weight:700;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:110px;}
+.pc2{font-size:10px;color:var(--dm);}
+.pst2{margin-left:auto;font-size:9px;padding:3px 8px;border-radius:20px;
+  background:rgba(255,255,255,.07);color:var(--dm);white-space:nowrap;}
+.pst2.turn{background:rgba(240,192,64,.2);color:var(--gd);font-weight:600;}
+.pst2.fold{background:rgba(231,76,60,.18);color:#e74c3c;}
+.pst2.think{background:rgba(52,152,219,.18);color:#7fb3d3;}
+/* Bluff meter */
+.bluff-row{display:flex;align-items:center;gap:6px;margin-top:4px;}
+.bluff-lbl{font-size:9px;color:var(--dm);white-space:nowrap;}
+.bluff-bar{flex:1;height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden;}
+.bluff-fill{height:100%;border-radius:3px;transition:width .5s ease;background:var(--gr);}
+/* Cards */
+.cards-row{display:flex;gap:7px;justify-content:center;min-height:86px;align-items:center;}
+.card{width:56px;height:82px;border-radius:8px;background:var(--cd);
   box-shadow:0 6px 18px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.8);
   display:flex;align-items:center;justify-content:center;position:relative;
   border:1px solid rgba(0,0,0,.1);transition:transform .2s;transform-origin:center bottom;}
 .card:hover{transform:translateY(-5px) rotate(-2deg);}
 .card.r{color:#c0392b;}.card.b{color:#1a1a1a;}
-.ct{position:absolute;top:5px;left:6px;font-size:12px;font-weight:800;line-height:1;}
-.cm{font-size:25px;}
-.cb{position:absolute;bottom:5px;right:6px;font-size:12px;font-weight:800;line-height:1;transform:rotate(180deg);}
+.ct{position:absolute;top:4px;left:5px;font-size:11px;font-weight:800;line-height:1;}
+.cm{font-size:24px;}.cb{position:absolute;bottom:4px;right:5px;font-size:11px;font-weight:800;line-height:1;transform:rotate(180deg);}
 .card.hid{background:linear-gradient(135deg,#1a3a6b,#0d1f3c)!important;border:2px solid rgba(255,255,255,.1)!important;}
-.card.hid::after{content:'🂠';font-size:38px;}
+.card.hid::after{content:'🂠';font-size:36px;}
 .deal{animation:deal .35s cubic-bezier(.34,1.56,.64,1) both;}
 .deal:nth-child(2){animation-delay:.12s;}.deal:nth-child(3){animation-delay:.24s;}
 @keyframes deal{from{transform:translateY(-50px) rotate(-10deg) scale(.5);opacity:0}to{transform:none;opacity:1}}
-.hl{text-align:center;font-size:11px;color:var(--gold);min-height:16px;margin-top:5px;}
-.taunt{width:100%;min-height:30px;background:rgba(0,0,0,.2);border-radius:10px;
-  padding:6px 13px;font-size:12px;color:var(--dim);text-align:center;
+.hl{text-align:center;font-size:11px;color:var(--gd);min-height:15px;margin-top:4px;}
+/* Timer bar */
+.timer-wrap{width:100%;height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden;}
+.timer-fill{height:100%;border-radius:3px;background:var(--gr);transition:width .1s linear;}
+/* Taunt */
+.taunt{width:100%;min-height:28px;background:rgba(0,0,0,.2);border-radius:9px;
+  padding:6px 12px;font-size:12px;color:var(--dm);text-align:center;
   border:1px solid rgba(255,255,255,.04);transition:all .3s;font-style:italic;}
 .taunt.cpu{color:#f39c12;border-color:rgba(243,156,18,.18);}
 .taunt.win{color:#2ecc71;border-color:rgba(46,204,113,.18);}
-.streak-bar{display:flex;align-items:center;justify-content:center;gap:6px;
-  font-size:12px;font-weight:600;min-height:18px;}
-.sf{animation:sf .6s ease infinite alternate;}
-@keyframes sf{from{transform:scale(1)}to{transform:scale(1.25) rotate(5deg)}}
-/* ACTION BAR */
+.streak-bar{display:flex;align-items:center;justify-content:center;gap:5px;font-size:11px;font-weight:600;min-height:17px;}
+.sf{animation:sf .6s ease infinite alternate;}@keyframes sf{from{transform:scale(1)}to{transform:scale(1.25) rotate(5deg)}}
+/* Action Bar */
 .abar{width:100%;display:flex;flex-direction:column;gap:7px;transition:opacity .2s;}
-.abar.disabled{opacity:.3;pointer-events:none;}
-.aturn{text-align:center;font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:1.5px;}
-.abgrid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:7px;}
-.arow{display:flex;gap:7px;}
-.ab{padding:11px 5px;border:none;border-radius:12px;font-size:12px;font-weight:700;
+.abar.dis{opacity:.3;pointer-events:none;}
+.aturn{text-align:center;font-size:10px;color:var(--dm);text-transform:uppercase;letter-spacing:1.5px;}
+.ab4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;}
+.a2{display:flex;gap:6px;}
+.ab{padding:10px 4px;border:none;border-radius:11px;font-size:11px;font-weight:700;
   cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif;flex:1;}
 .ab:hover:not(:disabled){transform:translateY(-3px);box-shadow:0 6px 16px rgba(0,0,0,.4);}
 .ab:active:not(:disabled){transform:translateY(0);}
 .ab:disabled{opacity:.3;cursor:not-allowed;transform:none!important;box-shadow:none!important;}
-.ab-see  {background:rgba(52,152,219,.2);color:#7fb3d3;border:1px solid rgba(52,152,219,.3);}
-.ab-call {background:linear-gradient(135deg,#27ae60,#1e8449);color:#fff;}
-.ab-raise{background:linear-gradient(135deg,#2980b9,#1a6394);color:#fff;}
-.ab-fold {background:linear-gradient(135deg,#c0392b,#922b21);color:#fff;}
-.ab-allin{background:linear-gradient(135deg,#8e44ad,#6c3483);color:#fff;}
-.ab-show {background:linear-gradient(135deg,#f0c040,#c8960c);color:#1a0f00;}
+.a-see{background:rgba(52,152,219,.2);color:#7fb3d3;border:1px solid rgba(52,152,219,.3);}
+.a-call{background:linear-gradient(135deg,#27ae60,#1e8449);color:#fff;}
+.a-raise{background:linear-gradient(135deg,#2980b9,#1a6394);color:#fff;}
+.a-fold{background:linear-gradient(135deg,#c0392b,#922b21);color:#fff;}
+.a-allin{background:linear-gradient(135deg,#8e44ad,#6c3483);color:#fff;}
+.a-show{background:linear-gradient(135deg,#f0c040,#c8960c);color:#1a0f00;}
+.a-chat{background:rgba(255,255,255,.08);color:var(--tx);border:1px solid rgba(255,255,255,.1);}
+/* CHAT DRAWER */
+.chat-drawer{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(100%);
+  width:100%;max-width:520px;background:linear-gradient(180deg,#0d2b1e,#071a12);
+  border-top:1px solid rgba(240,192,64,.25);border-radius:20px 20px 0 0;
+  padding:14px;z-index:400;transition:transform .35s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:0 -10px 40px rgba(0,0,0,.6);}
+.chat-drawer.open{transform:translateX(-50%) translateY(0);}
+.chat-close{text-align:center;cursor:pointer;color:var(--dm);font-size:12px;margin-bottom:10px;}
+.chat-msgs{max-height:160px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;margin-bottom:10px;}
+.chat-msg{padding:7px 12px;border-radius:12px;font-size:12px;max-width:75%;}
+.chat-msg.me{background:rgba(240,192,64,.15);color:var(--tx);align-self:flex-end;}
+.chat-msg.opp{background:rgba(255,255,255,.08);color:var(--tx);align-self:flex-start;}
+.chat-name{font-size:9px;color:var(--dm);margin-bottom:2px;}
+.emoji-row{display:flex;gap:6px;margin-bottom:10px;justify-content:center;flex-wrap:wrap;}
+.emoji-btn{font-size:24px;cursor:pointer;transition:transform .15s;border:none;background:transparent;
+  padding:4px;border-radius:8px;}
+.emoji-btn:hover{transform:scale(1.3);}
+.quick-msgs{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.qmsg{padding:8px;border:1px solid rgba(255,255,255,.1);border-radius:10px;
+  font-size:11px;color:var(--tx);cursor:pointer;background:rgba(255,255,255,.04);
+  transition:all .15s;text-align:center;}
+.qmsg:hover{background:rgba(240,192,64,.1);border-color:rgba(240,192,64,.3);}
 /* PASS SCREEN */
 #passScr{justify-content:center;}
-.pass-wrap{text-align:center;display:flex;flex-direction:column;align-items:center;gap:22px;padding:20px;}
-.pass-big{font-size:80px;}
+.pass-wrap{text-align:center;display:flex;flex-direction:column;align-items:center;gap:20px;padding:20px;}
+.pass-big{font-size:80px;animation:pw 2s ease-in-out infinite;}
+@keyframes pw{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(10deg)}}
 /* RESULT */
 .res-hero{width:100%;text-align:center;background:rgba(0,0,0,.3);
-  border:1px solid rgba(240,192,64,.22);border-radius:20px;padding:22px 15px;}
-.res-title{font-family:'Playfair Display',serif;font-size:28px;color:var(--gold);}
-.res-sub{font-size:12px;color:var(--dim);margin:5px 0;}
-.res-pot{font-size:22px;font-weight:700;color:#2ecc71;}
-.both-h{display:grid;grid-template-columns:1fr 1fr;gap:9px;width:100%;}
-.hbox{background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:13px;text-align:center;}
-.hbox.win{border-color:rgba(240,192,64,.4);background:rgba(240,192,64,.07);}
-.hbox-name{font-size:13px;font-weight:600;margin-bottom:5px;}
-.hbox-type{font-size:11px;color:var(--gold);margin-top:5px;}
-.hbox-cards{font-size:10px;color:var(--dim);letter-spacing:1px;margin-top:3px;}
-.chips-board{width:100%;background:rgba(0,0,0,.2);border-radius:12px;
-  padding:12px 15px;font-size:13px;line-height:2.2;}
+  border:1px solid rgba(240,192,64,.22);border-radius:20px;padding:20px 14px;}
+.res-t{font-family:'Playfair Display',serif;font-size:28px;color:var(--gd);}
+.res-s{font-size:12px;color:var(--dm);margin:4px 0;}
+.res-p{font-size:22px;font-weight:700;color:var(--gr);}
+.both-h{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;}
+.hb{background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.06);border-radius:13px;padding:12px;text-align:center;}
+.hb.win{border-color:rgba(240,192,64,.4);background:rgba(240,192,64,.07);}
+.hb-n{font-size:13px;font-weight:600;margin-bottom:4px;}
+.hb-t{font-size:11px;color:var(--gd);margin-top:4px;}
+.hb-c{font-size:10px;color:var(--dm);letter-spacing:1px;margin-top:3px;}
+.cb2{width:100%;background:rgba(0,0,0,.2);border-radius:12px;padding:12px 14px;font-size:13px;line-height:2.2;}
+/* USERNAME SETUP */
+.setup-ico{font-size:60px;text-align:center;}
+.uinput{width:100%;padding:14px 16px;border:2px solid rgba(240,192,64,.25);
+  border-radius:13px;background:rgba(0,0,0,.3);color:var(--tx);
+  font-family:'Inter',sans-serif;font-size:16px;text-align:center;
+  outline:none;letter-spacing:2px;}
+.uinput:focus{border-color:rgba(240,192,64,.6);}
+.uinput::placeholder{letter-spacing:0;font-size:14px;}
 /* BUTTONS */
-.btn{width:100%;padding:14px;border:none;border-radius:14px;font-size:15px;font-weight:700;
+.btn{width:100%;padding:13px;border:none;border-radius:13px;font-size:14px;font-weight:700;
   cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;}
 .btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.4);}
-.btn-gold{background:linear-gradient(135deg,#f0c040,#c8960c);color:#1a0f00;}
-.btn-ghost{background:rgba(255,255,255,.07);color:var(--text);border:1px solid rgba(255,255,255,.12);}
-.btn-pur{background:linear-gradient(135deg,#8e44ad,#6c3483);color:#fff;}
-.btn-sm{font-size:13px;padding:11px;}
-.btn-red{background:linear-gradient(135deg,#c0392b,#922b21);color:#fff;}
-/* OVERLAY/MODAL */
-.overlay{display:none;position:fixed;inset:0;background:rgba(4,14,8,.95);
+.btn-gd{background:linear-gradient(135deg,#f0c040,#c8960c);color:#1a0f00;}
+.btn-gh{background:rgba(255,255,255,.07);color:var(--tx);border:1px solid rgba(255,255,255,.12);}
+.btn-pu{background:linear-gradient(135deg,#8e44ad,#6c3483);color:#fff;}
+.btn-gr{background:linear-gradient(135deg,#27ae60,#1e8449);color:#fff;}
+.btn-rd{background:linear-gradient(135deg,#c0392b,#922b21);color:#fff;}
+.btn-sm{font-size:12px;padding:10px;}
+.btn-inline{width:auto;padding:9px 18px;font-size:12px;}
+/* OVERLAY */
+.ov{display:none;position:fixed;inset:0;background:rgba(4,14,8,.92);
   backdrop-filter:blur(5px);z-index:500;align-items:center;justify-content:center;}
-.overlay.on{display:flex;}
+.ov.on{display:flex;}
 .mbox{background:linear-gradient(160deg,#0d2b1e,#071a12);
   border:1px solid rgba(240,192,64,.25);border-radius:20px;
-  padding:28px 22px;max-width:320px;width:90%;
-  text-align:center;display:flex;flex-direction:column;gap:14px;
+  padding:26px 20px;max-width:320px;width:90%;
+  text-align:center;display:flex;flex-direction:column;gap:13px;
   box-shadow:0 20px 60px rgba(0,0,0,.7);}
-.mbox h2{font-family:'Playfair Display',serif;color:var(--gold);font-size:21px;}
-.mbox p{color:var(--dim);font-size:13px;line-height:1.6;}
-.mico{font-size:52px;}
-/* ACHIEVEMENT */
-.ach-toast{position:fixed;top:52px;left:50%;transform:translateX(-50%);
+.mbox h2{font-family:'Playfair Display',serif;color:var(--gd);font-size:21px;}
+.mbox p{color:var(--dm);font-size:13px;line-height:1.6;}
+.mico{font-size:50px;}
+/* TOAST */
+.toast{position:fixed;top:52px;left:50%;transform:translateX(-50%);
   background:linear-gradient(135deg,#1a0f00,#2a1800);
-  border:2px solid var(--gold);border-radius:16px;
-  padding:13px 22px;z-index:1000;text-align:center;
-  min-width:240px;box-shadow:0 8px 32px rgba(0,0,0,.6),0 0 28px var(--goldG);
+  border:2px solid var(--gd);border-radius:14px;
+  padding:11px 20px;z-index:1000;text-align:center;
+  min-width:220px;box-shadow:0 8px 32px rgba(0,0,0,.6),0 0 28px var(--gdg);
   display:none;}
-.ach-toast.on{display:block;animation:tat .4s cubic-bezier(.34,1.56,.64,1);}
-@keyframes tat{from{transform:translateX(-50%) translateY(-80px) scale(.8);opacity:0}
-               to{transform:translateX(-50%) translateY(0) scale(1);opacity:1}}
-.at-ico{font-size:30px;}.at-ttl{font-size:9px;color:var(--gold);text-transform:uppercase;letter-spacing:2px;margin:3px 0 1px;}
-.at-name{font-size:15px;font-weight:700;}
+.toast.on{display:block;animation:tat .4s cubic-bezier(.34,1.56,.64,1);}
+@keyframes tat{from{transform:translateX(-50%) translateY(-80px) scale(.8);opacity:0}to{transform:translateX(-50%) translateY(0) scale(1);opacity:1}}
+.t-ico{font-size:28px;}.t-ttl{font-size:9px;color:var(--gd);text-transform:uppercase;letter-spacing:2px;margin:2px 0;}
+.t-n{font-size:14px;font-weight:700;}
 /* CONFETTI */
 .cf{position:fixed;pointer-events:none;z-index:998;border-radius:2px;animation:cff linear forwards;}
 @keyframes cff{from{transform:translateY(-20px) rotate(0deg);opacity:1}to{transform:translateY(100vh) rotate(720deg);opacity:0}}
 /* MISC */
-.err{color:#e74c3c;font-size:12px;text-align:center;}
-.spin-small{display:inline-block;width:14px;height:14px;border-radius:50%;
+.err{color:var(--rd);font-size:12px;text-align:center;}
+.sm-sp{display:inline-block;width:14px;height:14px;border-radius:50%;
   border:2px solid rgba(255,255,255,.3);border-top-color:#fff;animation:spin .6s linear infinite;vertical-align:middle;}
+.sep{width:100%;height:1px;background:rgba(255,255,255,.07);}
+.section-lbl{width:100%;font-size:10px;color:var(--dm);text-transform:uppercase;letter-spacing:2px;
+  padding:0 2px;}
+.online-dot{width:8px;height:8px;border-radius:50%;background:var(--gr);display:inline-block;margin-right:4px;}
 </style>
 </head>
 <body>
 
-<!-- ═════ BRAND BAR ═════ -->
-<div class="brand"><span>♠ Ghalib Kamal ♠</span></div>
-
-<!-- ═════ ACHIEVEMENT TOAST ═════ -->
-<div class="ach-toast" id="achT">
-  <div class="at-ico" id="atIco">🏆</div>
-  <div class="at-ttl">Achievement Unlocked</div>
-  <div class="at-name" id="atName">-</div>
+<!-- BRAND BAR -->
+<div class="brand">
+  <div class="brand-name">♠ Ghalib Kamal ♠</div>
+  <div class="brand-chips" id="brandChips" style="display:none">💰 <span id="brandChipsN">0</span></div>
 </div>
 
-<!-- ════════════════ AUTH SCREEN ════════════════ -->
+<!-- TOAST -->
+<div class="toast" id="toastEl">
+  <div class="t-ico" id="tIco">🏆</div>
+  <div class="t-ttl">Achievement Unlocked</div>
+  <div class="t-n" id="tN">-</div>
+</div>
+
+<!-- ════════════════════════════
+     AUTH SCREEN
+════════════════════════════ -->
 <div id="authScr" class="scr on">
-  <div class="logo">Teen Patti</div>
+  <div class="auth-logo">Teen Patti</div>
   <div class="suits">♠ ♥ ♦ ♣</div>
-  <div class="sub-logo">तीन पत्ती Pro — by Ghalib Kamal</div>
-  <div class="login-box">
-    <div class="login-lbl">Sign in to save progress &amp; play online</div>
-    <button class="soc-btn btn-gg" onclick="loginGoogle()">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+  <div class="auth-sub">तीन पत्ती Pro — by Ghalib Kamal</div>
+  <div class="lbox">
+    <div class="lbox-t">Sign in to save progress &amp; play online</div>
+    <button class="sbtn sbtn-g" onclick="loginGoogle()">
+      <svg width="20" height="20" viewBox="0 0 24 24">
         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
         <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
         <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
       </svg>
       Continue with Google
     </button>
-    <button class="soc-btn btn-fb" onclick="loginFacebook()">
-      <span style="font-size:20px;font-weight:700;width:20px;text-align:center">f</span>
+    <button class="sbtn sbtn-f" onclick="loginFacebook()">
+      <span style="font-size:18px;font-weight:700;width:20px;text-align:center">f</span>
       Continue with Facebook
     </button>
-    <div class="or-div">or</div>
-    <button class="soc-btn btn-guest" onclick="loginGuest()">👤 Play as Guest (Offline only)</button>
+    <div class="ord">or</div>
+    <button class="sbtn sbtn-x" onclick="loginGuest()">👤 Play as Guest (offline only)</button>
     <div id="authErr" class="err" style="display:none"></div>
-    <div id="authLoad" style="display:none;text-align:center;color:var(--dim);font-size:12px">
-      <span class="spin-small"></span> Signing in...
-    </div>
+    <div id="authLoad" style="display:none;text-align:center;color:var(--dm);font-size:12px"><span class="sm-sp"></span> Signing in...</div>
   </div>
 </div>
 
-<!-- ════════════════ LOBBY SCREEN ════════════════ -->
-<div id="lobbyScr" class="scr">
-  <div class="user-row">
-    <div class="uav" id="lobAv">😎</div>
-    <div><div class="un" id="lobName">Player</div><div class="us" id="lobSub">Ready!</div></div>
-    <div class="uchips"><div class="uchips-n" id="lobChips">500</div><div class="uchips-l">Chips</div></div>
+<!-- ════════════════════════════
+     USERNAME SETUP
+════════════════════════════ -->
+<div id="setupScr" class="scr">
+  <div class="setup-ico">🎭</div>
+  <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--gd);text-align:center">Choose Your Username</div>
+  <div style="color:var(--dm);font-size:13px;text-align:center">Friends can find you by this name</div>
+  <input class="uinput" id="unInput" placeholder="e.g. ghalib2024" maxlength="16"
+    oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9_]/g,'')"/>
+  <div id="unErr" class="err" style="display:none"></div>
+  <button class="btn btn-gd" onclick="saveUsername()">Continue →</button>
+  <button class="btn btn-gh btn-sm" onclick="saveUsername(true)">Skip for now</button>
+</div>
+
+<!-- ════════════════════════════
+     HOME SCREEN
+════════════════════════════ -->
+<div id="homeScr" class="scr">
+  <div class="profile-card">
+    <div class="av" id="homeAv">😎<div class="av-online"></div></div>
+    <div>
+      <div class="pname" id="homeN">Player</div>
+      <div class="psub" id="homeU">@username</div>
+    </div>
+    <div class="chips-badge">
+      <div class="chips-n" id="homeC">500</div>
+      <div class="chips-l">Chips</div>
+    </div>
   </div>
   <div class="stat-row">
     <div class="sbox"><div class="sbox-n" id="stW">0</div><div class="sbox-l">Wins</div></div>
     <div class="sbox"><div class="sbox-n" id="stS">0</div><div class="sbox-l">Best Streak</div></div>
     <div class="sbox"><div class="sbox-n" id="stG">0</div><div class="sbox-l">Games</div></div>
   </div>
-  <button class="daily-btn" id="dailyBtn" onclick="claimDaily()">🎁 Claim Daily Bonus — +200 Chips</button>
-  <button class="mode-btn" onclick="startCPU()">
-    <div class="mc-ico">🤖</div>
-    <div><h3>vs CPU</h3><p>Smart AI with Hinglish taunts &amp; adaptive difficulty</p></div>
-  </button>
-  <button class="mode-btn" onclick="startPP()">
-    <div class="mc-ico">👥</div>
-    <div><h3>Pass &amp; Play</h3><p>2 players, 1 device — secure card reveals</p></div>
-  </button>
-  <button class="mode-btn" id="onlineBtn" onclick="goOnline()">
-    <div class="mc-ico">🌐</div>
-    <div><h3>Play Online</h3><p>Room code — play with friends anywhere!</p></div>
-  </button>
-  <button class="btn btn-ghost btn-sm" onclick="doLogout()">Sign Out</button>
+  <button class="daily" id="dailyBtn" onclick="claimDaily()">🎁 Daily Bonus — +200 Chips</button>
+  <div class="home-grid">
+    <div class="hcard gold" onclick="startCPU()">
+      <div class="hcard-ico">🤖</div>
+      <div class="hcard-t">vs CPU</div>
+      <div class="hcard-s">Practice mode</div>
+    </div>
+    <div class="hcard blue" onclick="startPP()">
+      <div class="hcard-ico">👥</div>
+      <div class="hcard-t">Pass &amp; Play</div>
+      <div class="hcard-s">2 players</div>
+    </div>
+    <div class="hcard purple" onclick="goHub()">
+      <div class="hcard-ico">🌐</div>
+      <div class="hcard-t">Play Online</div>
+      <div class="hcard-s">Quick match &amp; rooms</div>
+    </div>
+    <div class="hcard green" onclick="goFriends()">
+      <div class="hcard-ico">👫</div>
+      <div class="hcard-t">Friends</div>
+      <div class="hcard-s" id="friendCountLbl">0 online</div>
+    </div>
+  </div>
+  <div style="display:flex;gap:8px;width:100%">
+    <button class="btn btn-gh btn-sm" style="flex:1" onclick="goLeaderboard()">🏆 Leaderboard</button>
+    <button class="btn btn-gh btn-sm" style="flex:1" onclick="showScr('profileScr')">👤 Profile</button>
+    <button class="btn btn-gh btn-sm" style="flex:1" onclick="doLogout()">🚪 Logout</button>
+  </div>
 </div>
 
-<!-- ════════════════ ONLINE SCREEN ════════════════ -->
-<div id="onlineScr" class="scr">
-  <div style="font-family:'Playfair Display',serif;font-size:24px;color:var(--gold);text-align:center">Play Online 🌐</div>
-  <div class="tabs">
-    <button class="tab on" id="tabC" onclick="switchTab('c')">Create Room</button>
-    <button class="tab" id="tabJ" onclick="switchTab('j')">Join Room</button>
+<!-- ════════════════════════════
+     ONLINE HUB
+════════════════════════════ -->
+<div id="hubScr" class="scr">
+  <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--gd);text-align:center">Play Online 🌐</div>
+  <div class="hub-tabs">
+    <button class="htab on" id="htab0" onclick="hubTab(0)">⚡ Quick Match</button>
+    <button class="htab" id="htab1" onclick="hubTab(1)">🔑 Create Room</button>
+    <button class="htab" id="htab2" onclick="hubTab(2)">🔗 Join Room</button>
   </div>
-  <!-- Create Panel -->
-  <div class="panel" id="panC">
-    <div class="code-box" id="codeBox" style="display:none">
-      <div class="code-lbl">Your Room Code</div>
-      <div class="code-val" id="codeVal">------</div>
-      <div class="code-sub">Share with your friend</div>
+
+  <!-- Quick Match Panel -->
+  <div class="hub-panel" id="hp0">
+    <div id="qmIdle">
+      <div style="text-align:center;padding:10px 0">
+        <div style="font-size:48px;margin-bottom:10px">⚡</div>
+        <div style="font-size:16px;font-weight:700;color:var(--gd);margin-bottom:6px">Quick Match</div>
+        <div style="font-size:13px;color:var(--dm);line-height:1.6">Auto-match with anyone online.<br>No room code needed!</div>
+      </div>
+      <button class="btn btn-gd" onclick="joinQueue()">Find Opponent →</button>
     </div>
-    <div class="share-row" id="shareRow" style="display:none">
-      <button class="share-btn btn-copy" onclick="copyCode()">📋 Copy</button>
-      <button class="share-btn btn-wa" onclick="shareWA()">💬 WhatsApp</button>
+    <div id="qmSearching" style="display:none">
+      <div class="qm-status">
+        <div class="spinner"></div>
+        Searching for opponent...<br>
+        <span style="font-size:11px" id="qmTimer">0s</span>
+      </div>
+      <button class="btn btn-gh btn-sm" onclick="leaveQueue()">Cancel</button>
     </div>
-    <div id="waitOpp" style="display:none;text-align:center;color:var(--dim);font-size:13px;padding:8px">
-      <div class="waiting-spin" style="margin-bottom:12px"></div>
-      Waiting for opponent...
-    </div>
-    <button class="btn btn-gold" id="createBtn" onclick="createRoom()">🎮 Create New Room</button>
   </div>
-  <!-- Join Panel -->
-  <div class="panel" id="panJ" style="display:none">
+
+  <!-- Create Room Panel -->
+  <div class="hub-panel" id="hp1" style="display:none">
+    <div id="crIdle">
+      <button class="btn btn-gd" onclick="createRoom()">Create Private Room</button>
+    </div>
+    <div id="crCreated" style="display:none;flex-direction:column;gap:10px;width:100%">
+      <div class="code-box">
+        <div class="code-lbl">Your Room Code</div>
+        <div class="code-val" id="codeVal">------</div>
+        <div class="code-sub">Share with your friend</div>
+      </div>
+      <div class="share-row">
+        <button class="shbtn sh-copy" onclick="copyCode()">📋 Copy Code</button>
+        <button class="shbtn sh-wa" onclick="shareWA()">💬 WhatsApp</button>
+      </div>
+      <div style="text-align:center;color:var(--dm);font-size:12px;padding:8px">
+        <div class="spinner" style="width:36px;height:36px;margin:0 auto 8px"></div>
+        Waiting for opponent to join...
+      </div>
+    </div>
+  </div>
+
+  <!-- Join Room Panel -->
+  <div class="hub-panel" id="hp2" style="display:none">
     <input class="rinput" id="joinInput" placeholder="Enter Code" maxlength="6"
-      oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')" autocomplete="off" spellcheck="false"/>
-    <button class="btn btn-gold" onclick="joinRoom()">Join Room →</button>
+      oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')" spellcheck="false" autocomplete="off"/>
+    <button class="btn btn-gd" onclick="joinRoom()">Join →</button>
     <div id="joinErr" class="err" style="display:none"></div>
   </div>
-  <button class="btn btn-ghost btn-sm" onclick="cancelRoom();showScr('lobbyScr')">← Back</button>
+
+  <button class="btn btn-gh btn-sm" onclick="cancelRoom();showScr('homeScr')">← Back</button>
 </div>
 
-<!-- ════════════════ GAME SCREEN ════════════════ -->
+<!-- ════════════════════════════
+     FRIENDS SCREEN
+════════════════════════════ -->
+<div id="friendsScr" class="scr">
+  <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--gd);text-align:center">Friends 👫</div>
+  <input class="search-box" id="friendSearch" placeholder="Search by username to add friend..."
+    oninput="searchFriend(this.value)" autocomplete="off"/>
+  <div id="searchResults" style="width:100%;display:flex;flex-direction:column;gap:8px"></div>
+  <div class="sep"></div>
+  <div class="section-lbl">Friend Requests</div>
+  <div id="frReqs" style="width:100%;display:flex;flex-direction:column;gap:8px">
+    <div style="color:var(--dm);font-size:13px;text-align:center;padding:8px">No pending requests</div>
+  </div>
+  <div class="sep"></div>
+  <div class="section-lbl">My Friends</div>
+  <div id="frList" style="width:100%;display:flex;flex-direction:column;gap:8px">
+    <div style="color:var(--dm);font-size:13px;text-align:center;padding:8px">No friends yet. Search to add!</div>
+  </div>
+  <button class="btn btn-gh btn-sm" onclick="showScr('homeScr')">← Back</button>
+</div>
+
+<!-- ════════════════════════════
+     LEADERBOARD
+════════════════════════════ -->
+<div id="lbScr" class="scr">
+  <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--gd);text-align:center">🏆 Leaderboard</div>
+  <div id="lbList" style="width:100%;display:flex;flex-direction:column;gap:8px">
+    <div style="color:var(--dm);font-size:13px;text-align:center;padding:20px">
+      <div class="spinner" style="margin:0 auto 10px"></div>
+      Loading...
+    </div>
+  </div>
+  <button class="btn btn-gh btn-sm" onclick="showScr('homeScr')">← Back</button>
+</div>
+
+<!-- ════════════════════════════
+     PROFILE SCREEN
+════════════════════════════ -->
+<div id="profileScr" class="scr">
+  <div style="font-size:60px;text-align:center" id="profAvLg">😎</div>
+  <div style="font-weight:700;font-size:20px;text-align:center" id="profName">Player</div>
+  <div style="color:var(--gd);font-size:14px;text-align:center" id="profUser">@username</div>
+  <div class="stat-row">
+    <div class="sbox"><div class="sbox-n" id="profW">0</div><div class="sbox-l">Wins</div></div>
+    <div class="sbox"><div class="sbox-n" id="profL">0</div><div class="sbox-l">Losses</div></div>
+    <div class="sbox"><div class="sbox-n" id="profC">500</div><div class="sbox-l">Chips</div></div>
+  </div>
+  <div style="width:100%;background:rgba(0,0,0,.25);border-radius:12px;padding:14px 16px">
+    <div style="font-size:12px;color:var(--dm);margin-bottom:8px">Change Username</div>
+    <input class="uinput" id="newUnInput" placeholder="New username..." maxlength="16"
+      oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9_]/g,'')"/>
+    <button class="btn btn-gd btn-sm" style="margin-top:8px" onclick="updateUsername()">Update</button>
+  </div>
+  <button class="btn btn-gh btn-sm" onclick="showScr('homeScr')">← Back</button>
+</div>
+
+<!-- ════════════════════════════
+     GAME SCREEN
+════════════════════════════ -->
 <div id="gameScr" class="scr">
-  <!-- Top bar -->
   <div class="topbar">
-    <div class="phud"><div class="phud-name" id="g1n">You</div><div class="phud-chips" id="g1c">500</div><div class="phud-lbl">chips</div></div>
+    <div class="phud"><div class="phud-n" id="g1n">You</div><div class="phud-c" id="g1c">500</div><div class="phud-l">chips</div></div>
     <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
       <div class="pot-ring" id="potRing"><div class="pot-n" id="potN">0</div><div class="pot-l">Pot</div></div>
       <div class="streak-bar" id="strBar"></div>
     </div>
-    <div class="phud"><div class="phud-name" id="g2n">CPU</div><div class="phud-chips" id="g2c">500</div><div class="phud-lbl">chips</div></div>
+    <div class="phud"><div class="phud-n" id="g2n">CPU</div><div class="phud-c" id="g2c">500</div><div class="phud-l">chips</div></div>
   </div>
-  <!-- P2 Zone (top) -->
+  <!-- Timer bar (optional speed mode) -->
+  <div class="timer-wrap" id="timerWrap" style="display:none"><div class="timer-fill" id="timerFill" style="width:100%"></div></div>
+  <!-- Opponent Zone -->
   <div class="pzone" id="pz2">
     <div class="ph">
-      <div class="pav" id="av2">🤖</div>
-      <div><div class="pname" id="pn2">CPU</div><div class="pchips">Chips: <span id="pc2" style="color:var(--gold);font-weight:600">500</span></div></div>
-      <div class="pst" id="ps2">Waiting</div>
+      <div class="pav2" id="av2">🤖</div>
+      <div><div class="pn2" id="pn2">CPU</div><div class="pc2">Chips: <span id="pc2" style="color:var(--gd);font-weight:600">500</span></div></div>
+      <div class="pst2" id="ps2">Waiting</div>
     </div>
     <div class="cards-row" id="p2c"></div>
     <div class="hl" id="hl2"></div>
+    <!-- Bluff meter (for CPU/online opponent) -->
+    <div class="bluff-row" id="bluffRow" style="display:none">
+      <div class="bluff-lbl">Bluff-o-meter:</div>
+      <div class="bluff-bar"><div class="bluff-fill" id="bluffFill" style="width:30%"></div></div>
+      <div style="font-size:10px;color:var(--dm)" id="bluffLbl">Calm</div>
+    </div>
   </div>
-  <!-- Taunt -->
+  <!-- Taunt / log -->
   <div class="taunt" id="taunt">Cards dealt! Good luck 🃏</div>
-  <!-- P1 Zone (bottom) -->
+  <!-- Player Zone -->
   <div class="pzone" id="pz1">
     <div class="ph">
-      <div class="pav" id="av1">😎</div>
-      <div><div class="pname" id="pn1">You</div><div class="pchips">Chips: <span id="pc1" style="color:var(--gold);font-weight:600">500</span></div></div>
-      <div class="pst" id="ps1">Your Turn</div>
+      <div class="pav2" id="av1">😎</div>
+      <div><div class="pn2" id="pn1">You</div><div class="pc2">Chips: <span id="pc1" style="color:var(--gd);font-weight:600">500</span></div></div>
+      <div class="pst2" id="ps1">Your Turn</div>
     </div>
     <div class="cards-row" id="p1c"></div>
     <div class="hl" id="hl1"></div>
@@ -399,153 +596,180 @@ body{
   <!-- Action Bar -->
   <div class="abar" id="abar">
     <div class="aturn" id="aturn">Your Turn — Bet: ₹5</div>
-    <div class="abgrid">
-      <button class="ab ab-see"   id="abSee"   onclick="act('see')">👁 See</button>
-      <button class="ab ab-call"  id="abCall"  onclick="act('call')">✅ Call</button>
-      <button class="ab ab-raise" id="abRaise" onclick="act('raise')">⬆ Raise</button>
-      <button class="ab ab-fold"  id="abFold"  onclick="act('fold')">❌ Fold</button>
+    <div class="ab4">
+      <button class="ab a-see"   id="abSee"   onclick="act('see')">👁 See</button>
+      <button class="ab a-call"  id="abCall"  onclick="act('call')">✅ Call</button>
+      <button class="ab a-raise" id="abRaise" onclick="act('raise')">⬆ Raise</button>
+      <button class="ab a-fold"  id="abFold"  onclick="act('fold')">❌ Fold</button>
     </div>
-    <div class="arow">
-      <button class="ab ab-allin" onclick="act('allin')">💎 All-In</button>
-      <button class="ab ab-show"  id="abShow"  onclick="act('show')" style="display:none">🃏 Show</button>
+    <div class="a2">
+      <button class="ab a-allin" onclick="act('allin')">💎 All-In</button>
+      <button class="ab a-show"  id="abShow" onclick="act('show')" style="display:none">🃏 Show</button>
+      <button class="ab a-chat"  id="abChat" onclick="openChat()" style="display:none">💬 Chat</button>
     </div>
   </div>
 </div>
 
-<!-- ════════════════ PASS & PLAY SCREEN ════════════════ -->
+<!-- CHAT DRAWER -->
+<div class="chat-drawer" id="chatDrawer">
+  <div class="chat-close" onclick="closeChat()">▼ Close Chat</div>
+  <div class="chat-msgs" id="chatMsgs"></div>
+  <div class="emoji-row">
+    <button class="emoji-btn" onclick="sendEmoji('😂')">😂</button>
+    <button class="emoji-btn" onclick="sendEmoji('🔥')">🔥</button>
+    <button class="emoji-btn" onclick="sendEmoji('💀')">💀</button>
+    <button class="emoji-btn" onclick="sendEmoji('👏')">👏</button>
+    <button class="emoji-btn" onclick="sendEmoji('😤')">😤</button>
+    <button class="emoji-btn" onclick="sendEmoji('💎')">💎</button>
+    <button class="emoji-btn" onclick="sendEmoji('😈')">😈</button>
+    <button class="emoji-btn" onclick="sendEmoji('🙈')">🙈</button>
+  </div>
+  <div class="quick-msgs">
+    <div class="qmsg" onclick="sendQuick('GG bhai! 🤝')">GG bhai!</div>
+    <div class="qmsg" onclick="sendQuick('Trail mila 😈')">Trail mila!</div>
+    <div class="qmsg" onclick="sendQuick('Lucky shot! 🍀')">Lucky shot!</div>
+    <div class="qmsg" onclick="sendQuick('Agli baar dekh lena 😤')">Agli baar!</div>
+    <div class="qmsg" onclick="sendQuick('All-In time! 💎')">All-In time!</div>
+    <div class="qmsg" onclick="sendQuick('Kya haath hai! 😱')">Kya haath hai!</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════
+     PASS & PLAY SCREEN
+════════════════════════════ -->
 <div id="passScr" class="scr">
   <div class="pass-wrap">
-    <div class="pass-big" id="passIco" style="animation:passWave 2s ease-in-out infinite">📱</div>
-    <div style="font-family:'Playfair Display',serif;font-size:26px;color:var(--gold)" id="passH">Pass the Phone</div>
-    <div style="color:var(--dim);font-size:14px;max-width:280px;line-height:1.7;text-align:center" id="passD">Hand phone to next player. Don't peek!</div>
-    <button class="btn btn-gold" id="passRevBtn" onclick="ppReveal()">👁️ I'm Ready — Show My Cards</button>
-    <button class="btn btn-ghost" onclick="goLobby()">Quit Game</button>
+    <div class="pass-big">📱</div>
+    <div style="font-family:'Playfair Display',serif;font-size:24px;color:var(--gd)" id="passH">Pass the Phone</div>
+    <div style="color:var(--dm);font-size:13px;max-width:270px;line-height:1.7;text-align:center" id="passD">Hand device to next player</div>
+    <button class="btn btn-gd" onclick="ppReveal()" id="passRevBtn">👁 I'm Ready — Show My Cards</button>
+    <button class="btn btn-gh" onclick="goLobby()">Quit Game</button>
   </div>
 </div>
-<style>@keyframes passWave{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(10deg)}}</style>
 
-<!-- ════════════════ RESULT SCREEN ════════════════ -->
+<!-- ════════════════════════════
+     RESULT SCREEN
+════════════════════════════ -->
 <div id="resultScr" class="scr">
   <div class="res-hero">
-    <div class="res-title" id="resT">You Win!</div>
-    <div class="res-sub"  id="resS">Trail of Aces</div>
-    <div class="res-pot"  id="resP">+₹200</div>
+    <div class="res-t" id="resT">You Win!</div>
+    <div class="res-s" id="resS">Trail of Aces</div>
+    <div class="res-p" id="resP">+₹200</div>
   </div>
   <div class="both-h" id="bothH"></div>
-  <div class="chips-board" id="chipsB"></div>
-  <button class="btn btn-gold"  onclick="nextRound()">Deal Again ♠</button>
-  <button class="btn btn-pur"   id="dblBtn" onclick="doDouble()">💎 Double or Nothing!</button>
-  <button class="btn btn-ghost" onclick="goLobby()">Main Menu</button>
+  <div class="cb2" id="cbrd"></div>
+  <button class="btn btn-gd"  onclick="nextRound()">Deal Again ♠</button>
+  <button class="btn btn-pu"  id="dblBtn" onclick="doDouble()">💎 Double or Nothing!</button>
+  <button class="btn btn-gh"  onclick="goLobby()">Main Menu</button>
 </div>
 
-<!-- ════════════════ PASS MODAL (P&P) ════════════════ -->
-<div class="overlay" id="ppModal">
+<!-- MODALS -->
+<div class="ov" id="matchFoundModal">
   <div class="mbox">
-    <div class="mico">📱</div>
-    <h2 id="ppMH">Pass the Phone</h2>
-    <p id="ppMP">Hand device to next player. Don't look!</p>
-    <button class="btn btn-gold" onclick="document.getElementById('ppModal').classList.remove('on');showScr('passScr')">✅ I'm Handing It Over</button>
+    <div class="mico">🎮</div>
+    <h2 id="mfH">Match Found!</h2>
+    <p id="mfP">Opponent found. Get ready!</p>
+    <button class="btn btn-gd" onclick="closeModal('matchFoundModal');showScr('gameScr')">Let's Play! →</button>
   </div>
 </div>
-
-<!-- ════════════════ OPP LEFT MODAL ════════════════ -->
-<div class="overlay" id="oppModal">
+<div class="ov" id="oppLeftModal">
   <div class="mbox">
     <div class="mico">😢</div>
     <h2>Opponent Left</h2>
-    <p>Opponent disconnected. You win by default!</p>
-    <button class="btn btn-gold" onclick="document.getElementById('oppModal').classList.remove('on');goLobby()">Back to Lobby</button>
+    <p>Your opponent disconnected. You win!</p>
+    <button class="btn btn-gd" onclick="closeModal('oppLeftModal');G.p[0].chips+=G.pot;save();goLobby()">Back to Lobby</button>
   </div>
 </div>
-
-<!-- ════════════════ WAITING MODAL (Online found opponent) ════════════════ -->
-<div class="overlay" id="foundModal">
-  <div class="mbox">
-    <div class="mico" id="fmIco">🎮</div>
-    <h2 id="fmH">Opponent Found!</h2>
-    <p id="fmP">Get ready to play!</p>
-    <button class="btn btn-gold" onclick="document.getElementById('foundModal').classList.remove('on');showScr('gameScr')">Let's Play!</button>
+<div class="ov" id="rulesModal">
+  <div class="mbox" style="max-width:360px;text-align:left">
+    <h2 style="text-align:center">🃏 Teen Patti Rules</h2>
+    <div style="font-size:13px;color:var(--tx);line-height:1.8">
+      <b style="color:var(--gd)">Hand Rankings (High → Low):</b><br>
+      👑 Trail (3 same rank)<br>
+      ♠ Pure Sequence (3 consecutive, same suit)<br>
+      🔢 Sequence (3 consecutive)<br>
+      ♣ Color/Flush (3 same suit)<br>
+      ✌️ Pair (2 same rank)<br>
+      🃏 High Card<br><br>
+      <b style="color:var(--gd)">How to Play:</b><br>
+      • Everyone antes ₹5 to start<br>
+      • Play Blind (don't see cards) or See (look at cards)<br>
+      • Blind bets are half the current bet<br>
+      • Seen players bet the full amount<br>
+      • Call = match current bet<br>
+      • Raise = double the bet<br>
+      • Show = reveal cards (both players) — costs a bet<br>
+      • Fold = give up this round<br>
+      • All-In = bet everything!
+    </div>
+    <button class="btn btn-gd btn-sm" onclick="closeModal('rulesModal')">Got it!</button>
   </div>
 </div>
 
 <script>
 /* ═══════════════════════════════════════════════════
-   ██████  FIREBASE CONFIG — FILL THIS IN ██████
-   ═══════════════════════════════════════════════════
-   1. Go to console.firebase.google.com
-   2. Create project → Add web app
-   3. Copy the config object below and paste it here
-   4. Enable Auth: Google + Facebook
-   5. Enable Realtime Database (test mode)
-   6. Add your GitHub Pages URL to Auth → Authorized Domains
-   ═══════════════════════════════════════════════════ */
+   FIREBASE CONFIG — FILL THIS IN
+   1. console.firebase.google.com → New Project
+   2. Add Web App → Copy config
+   3. Enable Auth → Google + Facebook
+   4. Enable Realtime Database (test mode for now)
+   5. Add your GitHub Pages domain to Auth Authorized Domains
+═══════════════════════════════════════════════════ */
 const FB_CFG = {
-  apiKey:            "AIzaSyDdjQcBiF3pgQigyfPjijdlGY3a811X-bE",
-  authDomain:        "teen-patti-pro-6dfca.firebaseapp.com",
-  databaseURL:       "https://teen-patti-pro-6dfca-default-rtdb.firebaseio.com",
-  projectId:         "teen-patti-pro-6dfca",
-  storageBucket:     "teen-patti-pro-6dfca.firebasestorage.app",
-  messagingSenderId: "355900104984",
-  appId:             "1:355900104984:web:2f95ec1d5ae7f3ac6efe6d"
+  apiKey:            "YOUR_API_KEY",
+  authDomain:        "YOUR_PROJECT.firebaseapp.com",
+  databaseURL:       "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
+  projectId:         "YOUR_PROJECT_ID",
+  storageBucket:     "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId:             "YOUR_APP_ID"
 };
 
-// ─── DETECT CONTEXT ────────────────────────────────
-// Median app injects window.gonative
 const IS_MEDIAN   = typeof window.gonative !== 'undefined';
-// General WebView detection
 const IS_WEBVIEW  = IS_MEDIAN
   || (/android/i.test(navigator.userAgent) && /wv/i.test(navigator.userAgent))
   || (/iphone|ipad|ipod/i.test(navigator.userAgent) && !/safari/i.test(navigator.userAgent));
-const IS_FB_READY = FB_CFG.apiKey !== "YOUR_API_KEY";
+const FB_READY = FB_CFG.apiKey !== "YOUR_API_KEY";
 
 let fbAuth, fbDB, ME = null;
 
-if (IS_FB_READY) {
-  try {
+if(FB_READY){
+  try{
     firebase.initializeApp(FB_CFG);
     fbAuth = firebase.auth();
     fbDB   = firebase.database();
-    // ── KEY FIX: Explicit LOCAL persistence (fixes Median app login state) ──
     fbAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-  } catch(e) { console.warn('Firebase init failed:', e.message); }
+  }catch(e){console.warn('Firebase init:',e.message);}
 }
 
-/* ═══════════════════════════════════════════════════
-   CONSTANTS
-═══════════════════════════════════════════════════ */
-const RANKS = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
-const SUITS = ['♠','♥','♦','♣'];
-const SC    = {'♠':'b','♣':'b','♥':'r','♦':'r'};
-const RV    = {2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10,J:11,Q:12,K:13,A:14};
-
-const TAUNTS = {
-  str: ["Dekh liya haath? Chalega nahi aaj 😈","Pot mera hai, bol deta hoon 🤑","Aaj tujhe nahi jeeta dunga 😎","Trail mila, GG bhai 😂"],
-  blf: ["Hmm... soch raha hoon 🤔","Confident lagta hai tu 👀","Pakka? Toh call karta hoon 🃏","Interesting..."],
-  wk:  ["Achha khela yaar, agli baar 😅","CPU bhi haarta hai kabhi kabhi 🤷","Teri kismat thi aaj ⭐","Baar baar nahi hoga ye 😤"],
-  win: ["Teri chips ab meri! 💰","Trail!! Bhai toh gaya tu 🎯","Sach mein socha jeet jayega? 😂","Maza aaya bhai, next round? 😈"],
-  all: ["ALL-IN?! Chal main bhi! 💎","Itna confident hai? Chal dekh!","Theek hai, sab kuch laga de 😤"],
+/* ═══ CONSTANTS ═══ */
+const RANKS=['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+const SUITS=['♠','♥','♦','♣'];
+const SC={'♠':'b','♣':'b','♥':'r','♦':'r'};
+const RV={2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10,J:11,Q:12,K:13,A:14};
+const TAUNTS={
+  str:["Dekh liya haath? Chalega nahi 😈","Pot mera hai bhai 🤑","Trail mila, GG 😂","Teri chips ab meri 💰"],
+  blf:["Hmm... soch raha hoon 🤔","Confident lagta hai 👀","Pakka? Call karta hoon 🃏","Interesting..."],
+  wk: ["Achha khela, agli baar 😅","Teri kismat thi ⭐","CPU bhi haarta hai 🤷","Next round pakka! 😤"],
+  win:["Trail!! Bhai gaya tu 🎯","Sach mein socha jeetega? 😂","GG bhai, better luck 💀","Maza aaya! 😈"],
+  all:["ALL-IN?! Chal main bhi! 💎","Chalo dekh lete hain 😤","Theek hai, sab laga de! 🔥"],
 };
-
-const ACHS = [
-  {id:'fw',  name:'Pehli Jeet! 🎉',   icon:'🏆', c:g=>g.totalWins===1},
-  {id:'s3',  name:'Hat-Trick! 🔥',    icon:'🔥', c:g=>g.streak===3},
-  {id:'s5',  name:'Panchayat! 🌟',    icon:'🌟', c:g=>g.streak===5},
-  {id:'ai',  name:'All-In Hero! 💎',  icon:'💎', c:g=>g.lastAllIn},
-  {id:'tr',  name:'Trail Wala! 👑',   icon:'👑', c:g=>g.lastRank===5},
-  {id:'bp',  name:'Maha Pot! 💰',     icon:'💰', c:g=>g.bigPot>=200},
-  {id:'ck',  name:'Comeback King! 👊',icon:'👊', c:g=>g.p[0].chips<=50&&g.lastWin},
-  {id:'bc',  name:'CPU Bankrupt! 🤣', icon:'🤣', c:g=>g.p[1].chips<=0},
-  {id:'on1', name:'First Online Win!',icon:'🌐', c:g=>g.onlineWins===1},
+const ACHS=[
+  {id:'fw', n:'Pehli Jeet! 🎉', i:'🏆', c:g=>g.totalWins===1},
+  {id:'s3', n:'Hat-Trick! 🔥',  i:'🔥', c:g=>g.streak===3},
+  {id:'s5', n:'Panchayat! 🌟', i:'🌟', c:g=>g.streak===5},
+  {id:'ai', n:'All-In Hero! 💎',i:'💎', c:g=>g.lastAllIn},
+  {id:'tr', n:'Trail Wala! 👑', i:'👑', c:g=>g.lastRank===5},
+  {id:'bp', n:'Maha Pot! 💰',   i:'💰', c:g=>g.bigPot>=200},
+  {id:'ck', n:'Comeback King!', i:'👊', c:g=>g.p[0].chips<=50&&g.lastWin},
 ];
 
-/* ═══════════════════════════════════════════════════
-   AUDIO
-═══════════════════════════════════════════════════ */
-const AC2 = new (window.AudioContext||window.webkitAudioContext)();
-function beep(f,d,t='sine',v=0.3,dl=0){
+/* ═══ AUDIO ═══ */
+const AC2=new(window.AudioContext||window.webkitAudioContext)();
+function beep(f,d,t='sine',v=.3,dl=0){
   try{let o=AC2.createOscillator(),g=AC2.createGain();o.connect(g);g.connect(AC2.destination);
     o.type=t;o.frequency.value=f;g.gain.setValueAtTime(v,AC2.currentTime+dl);
-    g.gain.exponentialRampToValueAtTime(0.001,AC2.currentTime+dl+d);
+    g.gain.exponentialRampToValueAtTime(.001,AC2.currentTime+dl+d);
     o.start(AC2.currentTime+dl);o.stop(AC2.currentTime+dl+d+.01);}catch(e){}}
 const SFX={
   deal:()=>{[800,1000,900].forEach((f,i)=>beep(f,.06,'square',.15,i*.12));},
@@ -555,506 +779,430 @@ const SFX={
   win:()=>{[523,659,784,1047].forEach((f,i)=>beep(f,.15,'sine',.25,i*.12));},
   lose:()=>{beep(400,.15,'sine',.2);beep(300,.2,'sine',.2,.12);beep(200,.3,'sine',.2,.25);},
   ach:()=>{[784,988,1175,1568].forEach((f,i)=>beep(f,.12,'triangle',.2,i*.1));},
+  chat:()=>{beep(800,.08,'sine',.15);beep(1000,.06,'sine',.12,.06);},
 };
-document.addEventListener('click',()=>{if(AC2.state==='suspended')AC2.resume();},{once:true});
-document.addEventListener('touchend',()=>{if(AC2.state==='suspended')AC2.resume();},{once:true});
+['click','touchend'].forEach(e=>document.addEventListener(e,()=>{if(AC2.state==='suspended')AC2.resume();},{once:true}));
 
-/* ═══════════════════════════════════════════════════
-   STATE
-═══════════════════════════════════════════════════ */
-let G = {
-  mode:'cpu', pot:0, bet:5, ante:5, turn:0,
-  gameOver:false, showAll:false,
-  streak:0, bestStreak:0, totalWins:0, totalGames:0, bigPot:0,
-  onlineWins:0, lastAllIn:false, lastRank:-1, lastWin:false,
-  unlockedAchs: new Set(), dailyClaimed:false,
-  ppCurrent:0,            // P&P: who is currently playing (0 or 1)
-  myRole:'host',          // online: 'host' | 'guest'
-  roomCode:'', roomRef:null, roomListener:null,
+/* ═══ STATE ═══ */
+let G={
+  mode:'cpu',pot:0,bet:5,ante:5,turn:0,
+  gameOver:false,showAll:false,
+  streak:0,bestStreak:0,totalWins:0,totalLosses:0,totalGames:0,bigPot:0,
+  lastAllIn:false,lastRank:-1,lastWin:false,
+  unlockedAchs:new Set(),dailyClaimed:false,
+  ppCurrent:0,
+  myRole:'host',roomCode:'',
+  roomRef:null,roomListener:null,
+  qmTimer:null,qmInterval:null,
+  bluffScore:30, // 0-100, opponent bluff confidence
   p:[
-    {name:'You',  av:'😎', photo:null, chips:500, cards:[], seen:false, folded:false, bet:0},
-    {name:'CPU',  av:'🤖', photo:null, chips:500, cards:[], seen:false, folded:false, bet:0},
+    {name:'You', av:'😎',photo:null,chips:500,cards:[],seen:false,folded:false,bet:0},
+    {name:'CPU', av:'🤖',photo:null,chips:500,cards:[],seen:false,folded:false,bet:0},
   ]
 };
+let PROFILE={username:'',wins:0,losses:0};
 
-/* ═══════════════════════════════════════════════════
-   PERSISTENCE
-═══════════════════════════════════════════════════ */
+/* ═══ SAVE/LOAD ═══ */
 function save(){
   try{
-    localStorage.setItem('tp_w',G.totalWins); localStorage.setItem('tp_s',G.bestStreak);
-    localStorage.setItem('tp_g',G.totalGames); localStorage.setItem('tp_c',G.p[0].chips);
-    localStorage.setItem('tp_ow',G.onlineWins);
-    localStorage.setItem('tp_a',JSON.stringify([...G.unlockedAchs]));
-    localStorage.setItem('tp_d',G.dailyClaimed?new Date().toDateString():'');
+    localStorage.setItem('tp2_wins',G.totalWins);localStorage.setItem('tp2_loss',G.totalLosses);
+    localStorage.setItem('tp2_s',G.bestStreak);localStorage.setItem('tp2_g',G.totalGames);
+    localStorage.setItem('tp2_c',G.p[0].chips);localStorage.setItem('tp2_bp',G.bigPot);
+    localStorage.setItem('tp2_a',JSON.stringify([...G.unlockedAchs]));
+    localStorage.setItem('tp2_d',G.dailyClaimed?new Date().toDateString():'');
   }catch(e){}
 }
 function load(){
   try{
-    G.totalWins  = +localStorage.getItem('tp_w')  || 0;
-    G.bestStreak = +localStorage.getItem('tp_s')  || 0;
-    G.totalGames = +localStorage.getItem('tp_g')  || 0;
-    G.p[0].chips = +localStorage.getItem('tp_c')  || 500;
-    G.onlineWins = +localStorage.getItem('tp_ow') || 0;
-    G.unlockedAchs = new Set(JSON.parse(localStorage.getItem('tp_a')||'[]'));
-    G.dailyClaimed = localStorage.getItem('tp_d')===new Date().toDateString();
+    G.totalWins  = +localStorage.getItem('tp2_wins') ||0;
+    G.totalLosses= +localStorage.getItem('tp2_loss') ||0;
+    G.bestStreak = +localStorage.getItem('tp2_s')    ||0;
+    G.totalGames = +localStorage.getItem('tp2_g')    ||0;
+    G.p[0].chips = +localStorage.getItem('tp2_c')    ||500;
+    G.bigPot     = +localStorage.getItem('tp2_bp')   ||0;
+    G.unlockedAchs=new Set(JSON.parse(localStorage.getItem('tp2_a')||'[]'));
+    G.dailyClaimed=localStorage.getItem('tp2_d')===new Date().toDateString();
   }catch(e){}
 }
 
-/* ═══════════════════════════════════════════════════
-   AUTH  — Fixed for Web + Median App
-═══════════════════════════════════════════════════ */
+/* ═══ AUTH — WebView/Median Fix ═══ */
 async function loginGoogle(){
-  if(!IS_FB_READY){showAuthErr('Firebase not configured. Use Guest mode.');return;}
+  if(!FB_READY){showAuthErr('Firebase not configured. Use Guest mode.');return;}
   showAuthLoading(true);
   try{
-    const provider = new firebase.auth.GoogleAuthProvider();
-    if(IS_WEBVIEW){
-      // ── MEDIAN FIX: Use redirect for WebViews (popup is blocked in WebView) ──
-      await fbAuth.signInWithRedirect(provider);
-      // Page will reload — getRedirectResult() will handle it on next load
-    } else {
-      try{
-        const res = await fbAuth.signInWithPopup(provider);
-        onLoginSuccess(res.user);
-      } catch(e){
-        // Fallback to redirect if popup fails
-        if(e.code==='auth/popup-blocked'||e.code==='auth/popup-closed-by-user'){
-          await fbAuth.signInWithRedirect(provider);
-        } else { showAuthErr(e.message); }
+    const p=new firebase.auth.GoogleAuthProvider();
+    if(IS_WEBVIEW){await fbAuth.signInWithRedirect(p);}
+    else{
+      try{const r=await fbAuth.signInWithPopup(p);onLoginSuccess(r.user);}
+      catch(e){
+        if(e.code==='auth/popup-blocked'||e.code==='auth/popup-closed-by-user')
+          await fbAuth.signInWithRedirect(p);
+        else showAuthErr(e.message);
       }
     }
-  } catch(e){ showAuthErr(e.message); }
+  }catch(e){showAuthErr(e.message);}
   showAuthLoading(false);
 }
-
 async function loginFacebook(){
-  if(!IS_FB_READY){showAuthErr('Firebase not configured. Use Guest mode.');return;}
+  if(!FB_READY){showAuthErr('Firebase not configured. Use Guest mode.');return;}
   showAuthLoading(true);
   try{
-    const provider = new firebase.auth.FacebookAuthProvider();
-    if(IS_WEBVIEW){
-      await fbAuth.signInWithRedirect(provider);
-    } else {
-      try{
-        const res = await fbAuth.signInWithPopup(provider);
-        onLoginSuccess(res.user);
-      } catch(e){
-        if(e.code==='auth/popup-blocked'||e.code==='auth/popup-closed-by-user'){
-          await fbAuth.signInWithRedirect(provider);
-        } else { showAuthErr('Facebook login failed. Check Firebase Facebook setup.'); }
+    const p=new firebase.auth.FacebookAuthProvider();
+    if(IS_WEBVIEW){await fbAuth.signInWithRedirect(p);}
+    else{
+      try{const r=await fbAuth.signInWithPopup(p);onLoginSuccess(r.user);}
+      catch(e){
+        if(e.code==='auth/popup-blocked'||e.code==='auth/popup-closed-by-user')
+          await fbAuth.signInWithRedirect(p);
+        else showAuthErr('Facebook login failed. Check Firebase FB setup.');
       }
     }
-  } catch(e){ showAuthErr(e.message); }
+  }catch(e){showAuthErr(e.message);}
   showAuthLoading(false);
 }
-
 function loginGuest(){
-  ME={uid:'guest_'+Math.random().toString(36).slice(2), displayName:'Player', photoURL:null, isGuest:true};
+  ME={uid:'guest_'+Math.random().toString(36).slice(2),displayName:'Player',photoURL:null,isGuest:true};
   onLoginSuccess(ME);
-  document.getElementById('onlineBtn').classList.add('dis');
+  document.getElementById('hubScr') && document.querySelector('.hcard.purple')?.classList.add('dis');
 }
+async function onLoginSuccess(user){
+  ME=user; load();
+  G.p[0].name  = user.displayName||'Player';
+  G.p[0].photo = user.photoURL||null;
 
-function onLoginSuccess(user){
-  ME = user;
-  load();
-  G.p[0].name  = user.displayName || 'Player';
-  G.p[0].photo = user.photoURL || null;
-  updateLobbyUI();
-  showScr('lobbyScr');
-}
+  // Set user online in Firebase
+  if(fbDB&&!user.isGuest){
+    const pRef=fbDB.ref('players/'+user.uid);
+    const snap=await pRef.once('value').catch(()=>null);
+    const existing=snap?.val()||{};
+    PROFILE.username=existing.username||'';
+    PROFILE.wins=existing.wins||0;
+    PROFILE.losses=existing.losses||0;
+    await pRef.update({
+      name:user.displayName,photo:user.photoURL||'',
+      online:true,lastSeen:firebase.database.ServerValue.TIMESTAMP,
+      chips:G.p[0].chips,
+    });
+    pRef.child('online').onDisconnect().set(false);
 
-function showAuthErr(msg){
-  const e=document.getElementById('authErr');
-  e.textContent=msg; e.style.display='block';
-  setTimeout(()=>e.style.display='none',4000);
-}
-function showAuthLoading(show){
-  document.getElementById('authLoad').style.display=show?'block':'none';
-}
+    // Check for room code in URL
+    const urlRoom=new URLSearchParams(location.search).get('room');
+    if(urlRoom){
+      showScr('hubScr'); hubTab(2);
+      document.getElementById('joinInput').value=urlRoom.toUpperCase();
+    } else if(!PROFILE.username){
+      showScr('setupScr');return;
+    }
+  } else {
+    PROFILE.username=PROFILE.username||'guest';
+  }
 
+  updateHomeUI();
+  if(!new URLSearchParams(location.search).get('room')) showScr('homeScr');
+}
 async function doLogout(){
-  cancelRoom();
+  cancelRoom();leaveQueue();
+  if(fbDB&&ME&&!ME.isGuest) await fbDB.ref('players/'+ME.uid).update({online:false}).catch(()=>{});
   if(fbAuth&&!ME?.isGuest) await fbAuth.signOut().catch(()=>{});
-  ME=null; showScr('authScr');
+  ME=null;showScr('authScr');
 }
+function showAuthErr(m){const e=document.getElementById('authErr');e.textContent=m;e.style.display='block';setTimeout(()=>e.style.display='none',4000);}
+function showAuthLoading(s){document.getElementById('authLoad').style.display=s?'block':'none';}
 
-/* ── Handle redirect result on page load (for WebView/Median) ── */
-async function handleRedirectResult(){
-  if(!IS_FB_READY||!fbAuth)return;
+/* ═══ REDIRECT RESULT (Median fix) ═══ */
+async function handleRedirect(){
+  if(!FB_READY||!fbAuth)return;
   try{
-    const res = await fbAuth.getRedirectResult();
-    if(res&&res.user){ onLoginSuccess(res.user); return; }
-  }catch(e){ console.warn('Redirect result:', e.message); }
-  // Also check if already logged in (persistent session)
-  fbAuth.onAuthStateChanged(user=>{
-    if(user&&!ME){ onLoginSuccess(user); }
-  });
+    const r=await fbAuth.getRedirectResult();
+    if(r?.user){onLoginSuccess(r.user);return;}
+  }catch(e){console.warn('redirect:',e.message);}
+  fbAuth.onAuthStateChanged(u=>{if(u&&!ME)onLoginSuccess(u);});
 }
 
-/* ═══════════════════════════════════════════════════
-   LOBBY
-═══════════════════════════════════════════════════ */
-function updateLobbyUI(){
-  let p=G.p[0];
-  const av=document.getElementById('lobAv');
-  if(p.photo){ av.innerHTML=`<img src="${p.photo}" alt="">`; }
-  else { av.textContent=p.av||'😎'; }
-  document.getElementById('lobName').textContent=p.name;
-  document.getElementById('lobSub').textContent=ME?.isGuest?'Guest (offline only)':'Signed in ✓';
-  document.getElementById('lobChips').textContent=p.chips;
+/* ═══ USERNAME SETUP ═══ */
+async function saveUsername(skip=false){
+  if(skip){updateHomeUI();showScr('homeScr');return;}
+  const val=document.getElementById('unInput').value.trim();
+  if(val.length<3){document.getElementById('unErr').textContent='Min 3 characters';document.getElementById('unErr').style.display='block';return;}
+  document.getElementById('unErr').style.display='none';
+  if(fbDB&&ME){
+    // Check if username taken
+    const snap=await fbDB.ref('usernames/'+val).once('value').catch(()=>null);
+    if(snap?.exists()){document.getElementById('unErr').textContent='Username taken! Try another.';document.getElementById('unErr').style.display='block';return;}
+    await fbDB.ref('players/'+ME.uid).update({username:val});
+    await fbDB.ref('usernames/'+val).set(ME.uid);
+    PROFILE.username=val;
+  }
+  updateHomeUI(); showScr('homeScr');
+}
+async function updateUsername(){
+  const val=document.getElementById('newUnInput').value.trim();
+  if(val.length<3){toast('❌','Min 3 characters');return;}
+  if(fbDB&&ME){
+    const snap=await fbDB.ref('usernames/'+val).once('value').catch(()=>null);
+    if(snap?.exists()&&snap.val()!==ME.uid){toast('❌','Username taken!');return;}
+    if(PROFILE.username) await fbDB.ref('usernames/'+PROFILE.username).remove().catch(()=>{});
+    await fbDB.ref('players/'+ME.uid).update({username:val});
+    await fbDB.ref('usernames/'+val).set(ME.uid);
+    PROFILE.username=val;
+    document.getElementById('homeU').textContent='@'+val;
+    toast('✅','Username updated!');
+  }
+}
+
+/* ═══ HOME UI ═══ */
+function updateHomeUI(){
+  const p=G.p[0];
+  const av=document.getElementById('homeAv');
+  if(p.photo)av.innerHTML=`<img src="${p.photo}" alt=""><div class="av-online"></div>`;
+  else av.innerHTML=`${p.av||'😎'}<div class="av-online"></div>`;
+  document.getElementById('homeN').textContent=p.name;
+  document.getElementById('homeU').textContent='@'+(PROFILE.username||'player');
+  document.getElementById('homeC').textContent=p.chips;
   document.getElementById('stW').textContent=G.totalWins;
   document.getElementById('stS').textContent=G.bestStreak;
   document.getElementById('stG').textContent=G.totalGames;
+  document.getElementById('brandChips').style.display='block';
+  document.getElementById('brandChipsN').textContent=p.chips;
+
+  // Daily btn
   const db=document.getElementById('dailyBtn');
   db.disabled=G.dailyClaimed;
-  db.textContent=G.dailyClaimed?'✅ Daily Bonus Claimed':'🎁 Claim Daily Bonus — +200 Chips';
-}
+  db.textContent=G.dailyClaimed?'✅ Daily Bonus Claimed':'🎁 Daily Bonus — +200 Chips';
 
+  // Profile screen
+  if(p.photo)document.getElementById('profAvLg').innerHTML=`<img src="${p.photo}" style="width:60px;height:60px;border-radius:50%;border:2px solid var(--gd)">`;
+  else document.getElementById('profAvLg').textContent=p.av||'😎';
+  document.getElementById('profName').textContent=p.name;
+  document.getElementById('profUser').textContent='@'+(PROFILE.username||'player');
+  document.getElementById('profW').textContent=G.totalWins;
+  document.getElementById('profL').textContent=G.totalLosses;
+  document.getElementById('profC').textContent=p.chips;
+
+  // Online friends count
+  if(fbDB&&ME&&!ME.isGuest) loadFriendCount();
+}
 function claimDaily(){
   if(G.dailyClaimed)return;
-  G.p[0].chips+=200; G.dailyClaimed=true; save(); updateLobbyUI();
-  toast('🎁','Daily Bonus +200 chips!'); SFX.ach();
+  G.p[0].chips+=200;G.dailyClaimed=true;save();updateHomeUI();
+  toast('🎁','+200 Chips! Come back tomorrow!');SFX.ach();
 }
 
-function goOnline(){
-  if(ME?.isGuest){alert('Online needs Google / Facebook login!');return;}
-  if(!IS_FB_READY){alert('Fill Firebase config in the code first!');return;}
-  showScr('onlineScr'); switchTab('c');
+/* ═══ LEADERBOARD ═══ */
+async function goLeaderboard(){
+  showScr('lbScr');
+  if(!fbDB){document.getElementById('lbList').innerHTML='<div style="text-align:center;color:var(--dm);padding:20px">Firebase not configured</div>';return;}
+  const snap=await fbDB.ref('players').orderByChild('chips').limitToLast(10).once('value').catch(()=>null);
+  if(!snap){return;}
+  const players=[];
+  snap.forEach(s=>{const v=s.val();if(v.name)players.push({...v,uid:s.key});});
+  players.sort((a,b)=>b.chips-a.chips);
+  const medals=['🥇','🥈','🥉'];
+  document.getElementById('lbList').innerHTML=players.length?players.map((p,i)=>`
+    <div class="lb-row ${p.uid===ME?.uid?'":""}">
+      <div class="lb-rank">${medals[i]||('#'+(i+1))}</div>
+      <div class="av" style="width:34px;height:34px;font-size:16px">${p.photo?`<img src="${p.photo}" alt="">`:p.name[0]||'?'}</div>
+      <div class="lb-name">${p.name}${p.username?'<br><span style="font-size:10px;color:var(--dm)">@'+p.username+'</span>':''}</div>
+      <div class="lb-chips">${p.chips||0} 💰</div>
+    </div>`).join(''):'<div style="text-align:center;color:var(--dm);padding:20px">No players yet</div>';
 }
 
-/* ═══════════════════════════════════════════════════
-   DECK & HAND EVAL
-═══════════════════════════════════════════════════ */
-function mkDeck(){let d=[];for(let s of SUITS)for(let r of RANKS)d.push({r,s});return d;}
-function shuffle(a){for(let i=a.length-1;i>0;i--){let j=~~(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
-function dealCards(){let d=shuffle(mkDeck());G.p[0].cards=[d[0],d[1],d[2]];G.p[1].cards=[d[3],d[4],d[5]];}
-
-function evalH(cards){
-  let v=cards.map(c=>RV[c.r]).sort((a,b)=>b-a);
-  let s=cards.map(c=>c.s);
-  let fl=s.every(x=>x===s[0]);
-  let st=(v[0]-v[1]===1&&v[1]-v[2]===1)||(v[0]===14&&v[1]===3&&v[2]===2);
-  let tr=v[0]===v[1]&&v[1]===v[2];
-  let pr=v[0]===v[1]||v[1]===v[2]||v[0]===v[2];
-  if(tr)    return{rank:5,name:'Trail 🎯',v};
-  if(fl&&st)return{rank:4,name:'Pure Sequence ♠',v};
-  if(st)    return{rank:3,name:'Sequence 🔢',v};
-  if(fl)    return{rank:2,name:'Color/Flush ♣',v};
-  if(pr)    return{rank:1,name:'Pair ✌️',v};
-  return{rank:0,name:'High Card',v};
-}
-function cmpH(h1,h2){
-  if(h1.rank!==h2.rank)return h1.rank>h2.rank?1:-1;
-  for(let i=0;i<h1.v.length;i++)if(h1.v[i]!==h2.v[i])return h1.v[i]>h2.v[i]?1:-1;
-  return 0;
-}
-
-/* ═══════════════════════════════════════════════════
-   CARD HTML
-═══════════════════════════════════════════════════ */
-function cardH(c,hidden,idx){
-  let dl=idx*.12+'s';
-  if(hidden)return`<div class="card hid deal" style="animation-delay:${dl}"></div>`;
-  return`<div class="card ${SC[c.s]} deal" style="animation-delay:${dl}">
-    <div class="ct">${c.r}</div><div class="cm">${c.s}</div><div class="cb">${c.r}</div></div>`;
-}
-function setAv(id,p){
-  const el=document.getElementById(id);if(!el)return;
-  if(p.photo)el.innerHTML=`<img src="${p.photo}" alt="">`;else el.textContent=p.av||'👤';
-}
-
-/* ═══════════════════════════════════════════════════
-   NEW ROUND
-═══════════════════════════════════════════════════ */
-function newRound(){
-  G.pot=0;G.bet=5;G.turn=0;G.gameOver=false;G.showAll=false;
-  G.lastAllIn=false;G.lastRank=-1;G.lastWin=false;G.ppCurrent=0;
-  for(let p of G.p){p.cards=[];p.seen=false;p.folded=false;p.bet=0;}
-  dealCards();
-  for(let p of G.p){let a=Math.min(G.ante,p.chips);p.chips-=a;p.bet+=a;G.pot+=a;}
-  G.totalGames++;
-  setTaunt('Cards dealt! Ante ₹'+G.ante+' each. Good luck! 🃏');
-  SFX.deal(); ui();
-}
-
-/* ═══════════════════════════════════════════════════
-   MAIN UI UPDATE
-═══════════════════════════════════════════════════ */
-function ui(){
-  let p0=G.p[0],p1=G.p[1];
-
-  // Names / chips in top bar and zones
-  ['g1n','pn1'].forEach(id=>document.getElementById(id).textContent=p0.name.split(' ')[0]);
-  ['g2n','pn2'].forEach(id=>document.getElementById(id).textContent=p1.name.split(' ')[0]);
-  ['g1c','pc1'].forEach(id=>document.getElementById(id).textContent=p0.chips);
-  ['g2c','pc2'].forEach(id=>document.getElementById(id).textContent=p1.chips);
-  document.getElementById('potN').textContent=G.pot;
-  setAv('av1',p0); setAv('av2',p1);
-
-  // Streak bar
-  const sb=document.getElementById('strBar');
-  sb.innerHTML=G.streak>=2?`<span class="sf">🔥</span><span>${G.streak} Win Streak!</span>`:'';
-
-  // Zone highlights
-  const activeTurn = G.turn; // 0 or 1
-  document.getElementById('pz1').className='pzone'+(activeTurn===0&&!G.gameOver?' active':'')+(p0.folded?' fold':'');
-  document.getElementById('pz2').className='pzone'+(activeTurn===1&&!G.gameOver?' active':'')+(p1.folded?' fold':'');
-
-  // Status badges
-  const setPS=(elId,p,isActive)=>{
-    const el=document.getElementById(elId);
-    if(p.folded){el.textContent='Folded';el.className='pst fold';}
-    else if(isActive){el.textContent=elId==='ps1'?(G.mode==='cpu'?'Your Turn':'Playing'):(G.mode==='cpu'?'Thinking...':'Playing');
-      el.className='pst '+(G.mode==='cpu'&&elId==='ps2'?'think':'turn');}
-    else{el.textContent='Waiting';el.className='pst';}
-  };
-  setPS('ps1',p0,activeTurn===0);
-  setPS('ps2',p1,activeTurn===1);
-
-  // CPU thinking animation
-  document.getElementById('av2').classList.toggle('think', G.mode==='cpu'&&G.turn===1&&!G.gameOver);
-
-  // Cards
-  renderCards();
-
-  // Action bar
-  updateAbar();
-}
-
-function renderCards(){
-  let p0=G.p[0],p1=G.p[1];
-  let show0,show1;
-  if(G.showAll){show0=true;show1=true;}
-  else if(G.mode==='cpu'){ show0=p0.seen; show1=false; }
-  else if(G.mode==='pass'){
-    // ── P&P FIX: Only show current player's cards if THEY have seen them ──
-    show0 = (G.ppCurrent===0) && p0.seen;
-    show1 = (G.ppCurrent===1) && p1.seen;
-  } else {
-    // Online: show my cards, hide opp (trust-based)
-    if(G.myRole==='host'){ show0=p0.seen; show1=G.showAll; }
-    else { show0=G.showAll; show1=p1.seen; }
+/* ═══ FRIENDS ═══ */
+async function goFriends(){
+  showScr('friendsScr');
+  if(!fbDB||!ME||ME.isGuest){
+    document.getElementById('frList').innerHTML='<div style="color:var(--dm);font-size:13px;text-align:center;padding:8px">Login with Google/Facebook to use friends!</div>';
+    return;
   }
-  document.getElementById('p1c').innerHTML=p0.cards.map((c,i)=>cardH(c,!show0,i)).join('');
-  document.getElementById('p2c').innerHTML=p1.cards.map((c,i)=>cardH(c,!show1,i)).join('');
-  document.getElementById('hl1').textContent=(show0&&!p0.folded)?evalH(p0.cards).name:'';
-  document.getElementById('hl2').textContent=(show1&&!p1.folded)?evalH(p1.cards).name:'';
+  loadFriends(); loadFriendRequests();
 }
-
-function updateAbar(){
-  const abar=document.getElementById('abar');
-
-  /* ══ KEY P&P FIX ══
-     Previous bug: `canAct = G.turn===0` — disabled Player 2 completely!
-     Fix: In P&P, action bar is always enabled (physical security via device passing)
-         In CPU mode, only enabled when it's player's turn
-         In Online mode, only enabled when it's my turn */
-  let canAct;
-  if(G.mode==='pass'){
-    canAct = !G.gameOver; // Both players can act — P&P physical security ensures correct player has device
-  } else if(G.mode==='cpu'){
-    canAct = G.turn===0 && !G.gameOver;
-  } else {
-    const myTurn = (G.myRole==='host'&&G.turn===0)||(G.myRole==='guest'&&G.turn===1);
-    canAct = myTurn && !G.gameOver;
+async function loadFriendCount(){
+  if(!fbDB||!ME||ME.isGuest)return;
+  const snap=await fbDB.ref('friends/'+ME.uid).once('value').catch(()=>null);
+  const fr=snap?.val()||{};
+  const accepted=Object.values(fr).filter(f=>f.status==='accepted');
+  let online=0;
+  // Count online friends (simplified)
+  document.getElementById('friendCountLbl').textContent=accepted.length+' friends';
+}
+async function loadFriends(){
+  const snap=await fbDB.ref('friends/'+ME.uid).once('value').catch(()=>null);
+  const fr=snap?.val()||{};
+  const accepted=Object.entries(fr).filter(([,v])=>v.status==='accepted');
+  const el=document.getElementById('frList');
+  if(!accepted.length){el.innerHTML='<div style="color:var(--dm);font-size:13px;text-align:center;padding:8px">No friends yet. Search to add!</div>';return;}
+  el.innerHTML=accepted.map(([uid,v])=>`
+    <div class="friend-row">
+      <div class="av" style="width:38px;height:38px;font-size:17px">${v.photo?`<img src="${v.photo}" alt="">`:(v.name||'?')[0]}</div>
+      <div class="fr-info"><div class="fr-name">${v.name||'Player'}</div><div class="fr-sub">@${v.username||'user'}</div></div>
+      <span class="fr-status ${v.online?'fr-online':'fr-offline'}">${v.online?'● Online':'○ Offline'}</span>
+      ${v.online?`<button class="fr-btn fr-inv" onclick="inviteFriend('${uid}','${v.name||'Player'}')">Invite</button>`:''}
+    </div>`).join('');
+}
+async function loadFriendRequests(){
+  const snap=await fbDB.ref('friend_requests/'+ME.uid).once('value').catch(()=>null);
+  const reqs=snap?.val()||{};
+  const entries=Object.entries(reqs);
+  const el=document.getElementById('frReqs');
+  if(!entries.length){el.innerHTML='<div style="color:var(--dm);font-size:13px;text-align:center;padding:8px">No pending requests</div>';return;}
+  el.innerHTML=entries.map(([uid,v])=>`
+    <div class="friend-row">
+      <div class="av" style="width:38px;height:38px;font-size:17px">${(v.name||'?')[0]}</div>
+      <div class="fr-info"><div class="fr-name">${v.name||'Player'}</div><div class="fr-sub">wants to be friends</div></div>
+      <button class="fr-btn fr-acc" onclick="acceptFriend('${uid}','${JSON.stringify(v).replace(/'/g,"&apos;")}')">✓ Accept</button>
+    </div>`).join('');
+}
+let searchTimeout=null;
+function searchFriend(q){
+  clearTimeout(searchTimeout);
+  const el=document.getElementById('searchResults');
+  if(q.length<3){el.innerHTML='';return;}
+  el.innerHTML='<div style="color:var(--dm);font-size:12px;text-align:center">Searching...</div>';
+  searchTimeout=setTimeout(async()=>{
+    if(!fbDB)return;
+    const snap=await fbDB.ref('usernames/'+q.toLowerCase()).once('value').catch(()=>null);
+    if(!snap?.exists()){el.innerHTML='<div style="color:var(--dm);font-size:12px;text-align:center">No user found with that username</div>';return;}
+    const uid=snap.val();
+    if(uid===ME.uid){el.innerHTML='<div style="color:var(--dm);font-size:12px;text-align:center">That\'s you!</div>';return;}
+    const pSnap=await fbDB.ref('players/'+uid).once('value').catch(()=>null);
+    const p=pSnap?.val()||{name:'Player'};
+    el.innerHTML=`
+      <div class="friend-row">
+        <div class="av" style="width:38px;height:38px;font-size:17px">${p.photo?`<img src="${p.photo}" alt="">`:(p.name||'?')[0]}</div>
+        <div class="fr-info"><div class="fr-name">${p.name}</div><div class="fr-sub">@${q}</div></div>
+        <button class="fr-btn fr-add" onclick="sendFriendReq('${uid}','${p.name}','${p.photo||''}','${q}')">+ Add</button>
+      </div>`;
+  },500);
+}
+async function sendFriendReq(toUid,name,photo,username){
+  if(!fbDB||!ME)return;
+  await fbDB.ref('friend_requests/'+toUid+'/'+ME.uid).set({
+    name:ME.displayName,photo:ME.photoURL||'',
+    username:PROFILE.username||'',ts:firebase.database.ServerValue.TIMESTAMP});
+  // Also add to our friends list as pending
+  await fbDB.ref('friends/'+ME.uid+'/'+toUid).set({name,photo,username,status:'pending_sent'});
+  toast('📨','Friend request sent!');
+  document.getElementById('searchResults').innerHTML='<div style="color:var(--gr);font-size:12px;text-align:center">Request sent! ✓</div>';
+}
+async function acceptFriend(fromUid,vStr){
+  let v={};try{v=JSON.parse(vStr.replace(/&apos;/g,"'"));}catch(e){}
+  await fbDB.ref('friends/'+ME.uid+'/'+fromUid).set({...v,status:'accepted'});
+  await fbDB.ref('friends/'+fromUid+'/'+ME.uid).set({name:ME.displayName,photo:ME.photoURL||'',username:PROFILE.username,status:'accepted'});
+  await fbDB.ref('friend_requests/'+ME.uid+'/'+fromUid).remove();
+  toast('👫','Friend added!');loadFriends();loadFriendRequests();
+}
+async function inviteFriend(friendUid,friendName){
+  if(!G.roomCode){
+    const code=genCode();G.roomCode=code;G.myRole='host';
+    G.roomRef=fbDB.ref('rooms/'+code);
+    await G.roomRef.set({host:ME.uid,hostName:ME.displayName,hostPhoto:ME.photoURL||'',
+      guest:null,guestName:null,status:'waiting',hostChips:G.p[0].chips,
+      createdAt:firebase.database.ServerValue.TIMESTAMP});
+    // Notify friend via Firebase
+    await fbDB.ref('players/'+friendUid+'/invite').set({from:ME.displayName,room:code,ts:firebase.database.ServerValue.TIMESTAMP});
+    toast('📨',`Invite sent to ${friendName}! Room: ${code}`);
+    goHub(); hubTab(1);
+    document.getElementById('codeVal').textContent=code;
+    document.getElementById('crIdle').style.display='none';
+    document.getElementById('crCreated').style.display='flex';
+    // Listen for guest
+    G.roomRef.on('value',snap=>{
+      const r=snap.val();if(!r)return;
+      if(r.guest&&r.status==='playing'){G.roomRef.off('value');startOnlineGame(r,true);}
+    });
   }
-
-  abar.classList.toggle('disabled', !canAct);
-
-  // Current acting player
-  const cp = G.p[G.turn]; // In P&P this is G.p[G.ppCurrent] effectively
-  const ppP = G.mode==='pass' ? G.p[G.ppCurrent] : cp;
-
-  let turnTxt;
-  if(G.mode==='pass') turnTxt=`${ppP.name}'s Turn — Bet: ₹${G.bet}`;
-  else if(G.mode==='cpu') turnTxt=canAct?`Your Turn — Bet: ₹${G.bet}`:'CPU thinking...';
-  else turnTxt=canAct?`Your Turn — Bet: ₹${G.bet}`:'Waiting for opponent...';
-  document.getElementById('aturn').textContent=turnTxt;
-
-  // See button: show only if current P&P player hasn't seen their cards yet
-  const seenPlayer = G.mode==='pass' ? G.p[G.ppCurrent] : G.p[0];
-  document.getElementById('abSee').style.display = seenPlayer.seen ? 'none' : 'block';
-
-  document.getElementById('abCall').textContent  = `✅ Call ₹${G.bet}`;
-  document.getElementById('abRaise').textContent = `⬆ Raise ₹${G.bet*2}`;
-
-  // Show button after enough bets
-  const tot=G.p[0].bet+G.p[1].bet;
-  document.getElementById('abShow').style.display=(tot>=40&&!G.p[0].folded&&!G.p[1].folded)?'block':'none';
 }
 
-function setTaunt(msg,cls=''){
-  const t=document.getElementById('taunt');t.textContent=msg;t.className='taunt '+cls;
+/* ═══ ONLINE HUB ═══ */
+function goHub(){
+  if(ME?.isGuest){toast('🔒','Login required for online play!');return;}
+  if(!FB_READY){toast('⚠️','Configure Firebase first!');return;}
+  showScr('hubScr');hubTab(0);
 }
-function rT(k){const a=TAUNTS[k];return a[~~(Math.random()*a.length)];}
-function pulsePot(){const r=document.getElementById('potRing');r.classList.remove('bump');void r.offsetWidth;r.classList.add('bump');}
-
-/* ═══════════════════════════════════════════════════
-   ACTION DISPATCHER
-═══════════════════════════════════════════════════ */
-function act(action){
-  if(G.gameOver)return;
-  if(AC2.state==='suspended')AC2.resume();
-  if(G.mode==='cpu')   actCPU(action);
-  else if(G.mode==='pass')  actPP(action);
-  else if(G.mode==='online') actOnline(action);
-}
-
-/* ════════════════════════════════
-   CPU MODE ACTIONS
-════════════════════════════════ */
-function actCPU(action){
-  const p=G.p[0],opp=G.p[1];
-  if(action==='see'){p.seen=true;setTaunt('You look at your cards 👁️');ui();return;}
-  if(action==='fold'){SFX.fold();p.folded=true;opp.chips+=G.pot;G.showAll=true;endWin(1,'fold');return;}
-  if(action==='call'){const a=Math.min(G.bet,p.chips);p.chips-=a;p.bet+=a;G.pot+=a;SFX.chip();pulsePot();setTaunt('You call ₹'+a+'.');}
-  if(action==='raise'){const a=Math.min(G.bet*2,p.chips);p.chips-=a;p.bet+=a;G.pot+=a;G.bet*=2;SFX.raise();pulsePot();setTaunt('You raise to ₹'+G.bet+'! 😤','win');}
-  if(action==='allin'){const a=p.chips;p.chips=0;p.bet+=a;G.pot+=a;G.lastAllIn=true;SFX.raise();pulsePot();setTaunt('ALL-IN! 💎','win');G.showAll=true;ui();setTimeout(doShowdown,900);return;}
-  if(action==='show'){G.showAll=true;doShowdown();return;}
-  G.turn=1;ui();setTimeout(cpuThink,900+~~(Math.random()*700));
-}
-
-function cpuThink(){
-  const cpu=G.p[1];cpu.seen=true;
-  const h=evalH(cpu.cards),r=Math.random();
-  const tot=G.p[0].bet+G.p[1].bet;
-  let a;
-  if(h.rank>=4)       a=r<.7?'raise':'call';
-  else if(h.rank===3) a=r<.45?'raise':r<.85?'call':'fold';
-  else if(h.rank===2) a=r<.25?'raise':r<.68?'call':'fold';
-  else if(h.rank>=1)  a=r<.12?'raise':r<.52?'call':'fold';
-  else                a=r<.08?'raise':r<.38?'call':'fold';
-  if(r<.04&&cpu.chips>60)a='allin';
-  if(tot>=80&&r<.3){G.showAll=true;doShowdown();return;}
-
-  if(a==='fold'){SFX.fold();cpu.folded=true;G.p[0].chips+=G.pot;G.showAll=true;setTaunt(rT('wk'));endWin(0,'fold');return;}
-  if(a==='call'){const am=Math.min(G.bet,cpu.chips);cpu.chips-=am;cpu.bet+=am;G.pot+=am;SFX.chip();pulsePot();setTaunt(rT('blf'),'cpu');}
-  if(a==='raise'){const am=Math.min(G.bet*2,cpu.chips);cpu.chips-=am;cpu.bet+=am;G.pot+=am;G.bet*=2;SFX.raise();pulsePot();setTaunt(rT('str'),'cpu');}
-  if(a==='allin'){const am=cpu.chips;cpu.chips=0;cpu.bet+=am;G.pot+=am;G.lastAllIn=true;SFX.raise();pulsePot();setTaunt(rT('all'),'cpu');G.showAll=true;ui();setTimeout(doShowdown,800);return;}
-  G.turn=0;ui();
-}
-
-/* ════════════════════════════════
-   PASS & PLAY — FULLY FIXED
-════════════════════════════════ */
-function startPP(){
-  G.mode='pass';
-  G.p[1]={name:'Player 2',av:'🙋',photo:null,chips:500,cards:[],seen:false,folded:false,bet:0};
-  G.p[0].name = ME?.displayName?.split(' ')[0] || 'Player 1';
-  G.p[0].av = '🙋';
-  newRound();
-  ppShowPassScreen(0); // Start by passing to Player 1
-}
-
-// Show the "pass phone to X" screen
-function ppShowPassScreen(toPlayer){
-  G.ppCurrent = toPlayer;
-  G.turn = toPlayer; // Sync turn with ppCurrent
-  const name = G.p[toPlayer].name;
-
-  // Hide ALL cards in game screen (so opponent can't peek while passing)
-  document.getElementById('p1c').innerHTML = G.p[0].cards.map((_,i)=>cardH(null,true,i)).join('');
-  document.getElementById('p2c').innerHTML = G.p[1].cards.map((_,i)=>cardH(null,true,i)).join('');
-  document.getElementById('hl1').textContent=''; document.getElementById('hl2').textContent='';
-
-  document.getElementById('passH').textContent   = `${name}'s Turn`;
-  document.getElementById('passD').textContent   = `Pass the phone to ${name}.\nMake sure only ${name} can see the screen!`;
-  document.getElementById('passRevBtn').textContent = `👁 I'm ${name} — Show My Cards`;
-
-  showScr('passScr');
-}
-
-// Player confirms they have the phone and taps reveal
-function ppReveal(){
-  const idx = G.ppCurrent;
-  // Don't auto-reveal cards here — player can choose to play blind (tap See) or see first
-  // The pass screen already ensures the right person has the device
-  G.p[idx].seen = false; // Reset — they can choose blind or seen
-  G.turn = idx;
-
-  showScr('gameScr');
-
-  // Show only the current player's zone cards (hidden by default until they tap See)
-  // Other player's cards always hidden in P&P
-  document.getElementById('p1c').innerHTML = G.p[0].cards.map((c,i)=>cardH(c, idx!==0, i)).join('');
-  document.getElementById('p2c').innerHTML = G.p[1].cards.map((c,i)=>cardH(c, idx!==1, i)).join('');
-  document.getElementById('hl1').textContent=''; document.getElementById('hl2').textContent='';
-
-  // Enable action bar for this player
-  updateAbar();
-  ui();
-}
-
-// P&P action handler
-function actPP(action){
-  const idx = G.ppCurrent; // Who is acting
-  const p   = G.p[idx];
-  const opp = G.p[1-idx];
-
-  if(action==='see'){
-    p.seen=true;
-    // Show this player's cards in their zone
-    const cid=idx===0?'p1c':'p2c', hlid=idx===0?'hl1':'hl2';
-    document.getElementById(cid).innerHTML=p.cards.map((c,i)=>cardH(c,false,i)).join('');
-    document.getElementById(hlid).textContent=evalH(p.cards).name;
-    updateAbar(); return;
-  }
-
-  if(action==='fold'){
-    SFX.fold(); p.folded=true; opp.chips+=G.pot; G.showAll=true;
-    setTaunt(p.name+' folds! '+opp.name+' wins! 🏆','win');
-    endWin(1-idx,'fold'); return;
-  }
-  if(action==='call'){const a=Math.min(G.bet,p.chips);p.chips-=a;p.bet+=a;G.pot+=a;SFX.chip();pulsePot();setTaunt(p.name+' calls ₹'+a+'.');}
-  if(action==='raise'){const a=Math.min(G.bet*2,p.chips);p.chips-=a;p.bet+=a;G.pot+=a;G.bet*=2;SFX.raise();pulsePot();setTaunt(p.name+' RAISES to ₹'+G.bet+'! 😤','win');}
-  if(action==='allin'){const a=p.chips;p.chips=0;p.bet+=a;G.pot+=a;G.lastAllIn=true;SFX.raise();pulsePot();setTaunt(p.name+' goes ALL-IN! 💎','win');G.showAll=true;ui();setTimeout(doShowdown,900);return;}
-  if(action==='show'){G.showAll=true;doShowdown();return;}
-
-  const tot=G.p[0].bet+G.p[1].bet;
-  if(tot>=40)document.getElementById('abShow').style.display='block';
-
-  // Switch to the other player — show pass screen
-  setTimeout(()=>ppShowPassScreen(1-idx), 400);
-}
-
-/* ════════════════════════════════
-   ONLINE ROOM SYSTEM
-════════════════════════════════ */
-function genCode(){
-  const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  return Array.from({length:6},()=>c[~~(Math.random()*c.length)]).join('');
-}
-function switchTab(t){
-  document.getElementById('panC').style.display=t==='c'?'flex':'none';
-  document.getElementById('panJ').style.display=t==='j'?'flex':'none';
-  document.getElementById('tabC').classList.toggle('on',t==='c');
-  document.getElementById('tabJ').classList.toggle('on',t==='j');
-}
-
-async function createRoom(){
-  if(!fbDB){alert('Firebase not configured!');return;}
-  document.getElementById('createBtn').disabled=true;
-  document.getElementById('createBtn').innerHTML='Creating... <span class="spin-small"></span>';
-  const code=genCode(); G.roomCode=code; G.myRole='host';
-  G.roomRef=fbDB.ref('rooms/'+code);
-  await G.roomRef.set({
-    host:ME.uid, hostName:ME.displayName, hostPhoto:ME.photoURL||'',
-    guest:null, guestName:null, guestPhoto:null,
-    status:'waiting', hostChips:G.p[0].chips, guestChips:500,
-    createdAt:firebase.database.ServerValue.TIMESTAMP
+function hubTab(i){
+  [0,1,2].forEach(j=>{
+    document.getElementById('htab'+j).classList.toggle('on',j===i);
+    document.getElementById('hp'+j).style.display=j===i?'flex':'none';
   });
-  document.getElementById('codeVal').textContent=code;
-  document.getElementById('codeBox').style.display='block';
-  document.getElementById('shareRow').style.display='flex';
-  document.getElementById('waitOpp').style.display='block';
-  document.getElementById('createBtn').style.display='none';
+}
 
-  // Listen for guest joining
+/* ═══ QUICK MATCHMAKING ═══ */
+let qmSeconds=0;
+async function joinQueue(){
+  if(!fbDB||!ME)return;
+  document.getElementById('qmIdle').style.display='none';
+  document.getElementById('qmSearching').style.display='block';
+  qmSeconds=0;
+  G.qmInterval=setInterval(()=>{qmSeconds++;document.getElementById('qmTimer').textContent=qmSeconds+'s';},1000);
+
+  const myRef=fbDB.ref('mm_queue/'+ME.uid);
+  const code=genCode();
+  await myRef.set({uid:ME.uid,name:ME.displayName,photo:ME.photoURL||'',chips:G.p[0].chips,room:code,ts:firebase.database.ServerValue.TIMESTAMP});
+  myRef.onDisconnect().remove();
+
+  G.qmTimer=fbDB.ref('mm_queue').on('value',async snap=>{
+    const q=snap.val()||{};
+    const others=Object.entries(q).filter(([uid])=>uid!==ME.uid);
+    if(others.length>0){
+      const [oppUid,oppData]=others[0];
+      fbDB.ref('mm_queue').off('value',G.qmTimer);
+      clearInterval(G.qmInterval);
+      await myRef.remove();
+      await fbDB.ref('mm_queue/'+oppUid).remove();
+
+      // Lower uid creates the room (deterministic)
+      if(ME.uid<oppUid){
+        G.roomCode=code;G.myRole='host';
+        G.roomRef=fbDB.ref('rooms/'+code);
+        await G.roomRef.set({host:ME.uid,hostName:ME.displayName,hostPhoto:ME.photoURL||'',
+          guest:oppUid,guestName:oppData.name,guestPhoto:oppData.photo||'',
+          status:'playing',hostChips:G.p[0].chips,guestChips:oppData.chips||500,
+          createdAt:firebase.database.ServerValue.TIMESTAMP});
+        G.p[1]={name:oppData.name,av:'👤',photo:oppData.photo||null,chips:oppData.chips||500,cards:[],seen:false,folded:false,bet:0};
+        startOnlineGame({host:ME.uid,hostName:ME.displayName,guestName:oppData.name,guestPhoto:oppData.photo||'',hostChips:G.p[0].chips,guestChips:oppData.chips||500},true);
+      } else {
+        G.roomCode=oppData.room;G.myRole='guest';
+        G.roomRef=fbDB.ref('rooms/'+oppData.room);
+        await G.roomRef.update({guest:ME.uid,guestName:ME.displayName,guestPhoto:ME.photoURL||'',status:'playing',guestChips:G.p[0].chips});
+        G.p[1]={name:oppData.name,av:'👤',photo:oppData.photo||null,chips:oppData.chips||500,cards:[],seen:false,folded:false,bet:0};
+        const snap2=await G.roomRef.once('value');
+        startOnlineGame(snap2.val(),false);
+      }
+      document.getElementById('qmSearching').style.display='none';
+      document.getElementById('qmIdle').style.display='block';
+    }
+  });
+}
+function leaveQueue(){
+  if(G.qmTimer&&fbDB){fbDB.ref('mm_queue').off('value',G.qmTimer);G.qmTimer=null;}
+  if(G.qmInterval){clearInterval(G.qmInterval);G.qmInterval=null;}
+  if(fbDB&&ME) fbDB.ref('mm_queue/'+ME.uid).remove().catch(()=>{});
+  document.getElementById('qmSearching').style.display='none';
+  document.getElementById('qmIdle').style.display='block';
+}
+
+/* ═══ PRIVATE ROOM ═══ */
+function genCode(){const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';return Array.from({length:6},()=>c[~~(Math.random()*c.length)]).join('');}
+async function createRoom(){
+  if(!fbDB){toast('⚠️','Firebase not configured!');return;}
+  document.getElementById('crIdle').style.display='none';
+  document.getElementById('crCreated').style.display='flex';
+  const code=genCode();G.roomCode=code;G.myRole='host';
+  G.roomRef=fbDB.ref('rooms/'+code);
+  document.getElementById('codeVal').textContent=code;
+
+  await G.roomRef.set({host:ME.uid,hostName:ME.displayName,hostPhoto:ME.photoURL||'',
+    guest:null,guestName:null,guestPhoto:null,status:'waiting',
+    hostChips:G.p[0].chips,guestChips:500,
+    createdAt:firebase.database.ServerValue.TIMESTAMP});
+
+  // Update URL so friend can click the link
+  history.replaceState(null,'','?room='+code);
+
   G.roomListener=G.roomRef.on('value',snap=>{
-    const r=snap.val(); if(!r)return;
+    const r=snap.val();if(!r)return;
     if(r.guest&&r.status==='playing'){
-      G.roomRef.off('value',G.roomListener);
+      if(G.roomListener){G.roomRef.off('value',G.roomListener);G.roomListener=null;}
       startOnlineGame(r,true);
     }
   });
@@ -1062,275 +1210,471 @@ async function createRoom(){
 
 async function joinRoom(){
   const code=document.getElementById('joinInput').value.trim().toUpperCase();
-  if(code.length!==6){showJoinErr('Enter a 6-character room code');return;}
-  if(!fbDB){alert('Firebase not configured!');return;}
+  if(code.length!==6){showJoinErr('Enter 6-character room code');return;}
+  if(!fbDB){showJoinErr('Firebase not configured');return;}
+  showJoinErr('Joining...',false);
   try{
     const snap=await fbDB.ref('rooms/'+code).once('value');
     const r=snap.val();
     if(!r){showJoinErr('Room not found!');return;}
-    if(r.status!=='waiting'){showJoinErr('Room is full or already started!');return;}
+    if(r.status!=='waiting'){showJoinErr('Room already started or full!');return;}
     if(r.host===ME.uid){showJoinErr("Can't join your own room!");return;}
-    G.roomCode=code; G.myRole='guest';
+
+    G.roomCode=code;G.myRole='guest';
     G.roomRef=fbDB.ref('rooms/'+code);
+
+    // Set up player info
+    G.p[0]={...G.p[0],name:ME.displayName,photo:ME.photoURL};
+    G.p[1]={name:r.hostName,av:'👤',photo:r.hostPhoto||null,chips:r.hostChips||500,cards:[],seen:false,folded:false,bet:0};
+
     await G.roomRef.update({guest:ME.uid,guestName:ME.displayName,guestPhoto:ME.photoURL||'',status:'playing',guestChips:G.p[0].chips});
-    // Wait for host to deal
-    G.roomListener=G.roomRef.on('value',snap=>{
-      const r2=snap.val(); if(!r2)return;
-      if(r2.gameState){G.roomRef.off('value',G.roomListener);startOnlineGame(r2,false);}
+
+    // Listen for game state (host will deal)
+    G.roomListener=G.roomRef.on('value',snap2=>{
+      const r2=snap2.val();if(!r2)return;
+      if(r2.gameState){
+        if(G.roomListener){G.roomRef.off('value',G.roomListener);G.roomListener=null;}
+        startOnlineGame(r2,false);
+      }
+      if(r2.status==='abandoned'){closeModal('matchFoundModal');showJoinErr('Host left the room.');}
     });
-    showJoinErr(''); document.getElementById('joinInput').value='';
-    document.getElementById('joinErr').style.display='none';
-    // Show waiting UI
-    document.getElementById('panJ').innerHTML=`<div style="text-align:center;color:var(--dim);padding:20px"><div class="waiting-spin" style="margin-bottom:12px"></div>Joining room ${code}...<br>Waiting for host to deal...</div>`;
-  } catch(e){ showJoinErr('Error: '+e.message); }
+
+    showJoinErr('Joined! Waiting for host to deal cards...',false);
+    document.getElementById('joinInput').value='';
+    history.replaceState(null,'','?room='+code);
+
+  }catch(e){showJoinErr('Error: '+e.message);}
+}
+function showJoinErr(m,isErr=true){const e=document.getElementById('joinErr');e.textContent=m;e.style.display=m?'block':'none';e.style.color=isErr?'var(--rd)':'var(--dm)';}
+function copyCode(){navigator.clipboard.writeText(G.roomCode).then(()=>toast('📋','Code copied!'));}
+function shareWA(){const url=location.origin+location.pathname+'?room='+G.roomCode;window.open('https://wa.me/?text='+encodeURIComponent('Teen Patti challenge!\nRoom code: '+G.roomCode+'\nJoin: '+url),'_blank');}
+function cancelRoom(){
+  if(G.roomRef){try{G.roomRef.off();}catch(e){}
+    if(G.roomCode&&fbDB)fbDB.ref('rooms/'+G.roomCode).update({status:'abandoned'}).catch(()=>{});
+    G.roomRef=null;}
+  G.roomCode=''; history.replaceState(null,'',location.pathname);
+  document.getElementById('crIdle').style.display='block';document.getElementById('crCreated').style.display='none';
 }
 
-function showJoinErr(m){
-  const e=document.getElementById('joinErr');
-  if(!m){e.style.display='none';return;}
-  e.textContent=m; e.style.display='block';
-}
-function copyCode(){
-  navigator.clipboard.writeText(G.roomCode).then(()=>toast('📋','Room code copied!'));
-}
-function shareWA(){
-  const msg=encodeURIComponent(`🎴 Teen Patti challenge! Room: ${G.roomCode}\nJoin at: ${location.href}`);
-  window.open(`https://wa.me/?text=${msg}`,'_blank');
-}
-
-function startOnlineGame(roomData, isHost){
+/* ═══ START ONLINE GAME ═══ */
+function startOnlineGame(roomData,isHost){
   G.mode='online';
-  const myChips   = isHost ? roomData.hostChips  : roomData.guestChips;
-  const oppChips  = isHost ? roomData.guestChips : roomData.hostChips;
-  const oppName   = isHost ? roomData.guestName  : roomData.hostName;
-  const oppPhoto  = isHost ? roomData.guestPhoto : roomData.hostPhoto;
+  const myChips=isHost?roomData.hostChips:roomData.guestChips;
+  const oppChips=isHost?roomData.guestChips:roomData.hostChips;
+  const oppName =isHost?roomData.guestName:roomData.hostName;
+  const oppPhoto=isHost?(roomData.guestPhoto||null):(roomData.hostPhoto||null);
 
-  G.p[0]={...G.p[0],name:ME.displayName,photo:ME.photoURL,chips:myChips,cards:[],seen:false,folded:false,bet:0};
-  G.p[1]={name:oppName,av:'👤',photo:oppPhoto||null,chips:oppChips,cards:[],seen:false,folded:false,bet:0};
+  G.p[0]={...G.p[0],chips:myChips,cards:[],seen:false,folded:false,bet:0};
+  G.p[1]={name:oppName,av:'👤',photo:oppPhoto,chips:oppChips,cards:[],seen:false,folded:false,bet:0};
 
-  // Show "found opponent" modal
-  document.getElementById('fmIco').textContent='🎮';
-  document.getElementById('fmH').textContent='Opponent Found!';
-  document.getElementById('fmP').textContent=`${oppName} joined! Good luck!`;
-  document.getElementById('foundModal').classList.add('on');
+  document.getElementById('mfH').textContent='Opponent Found!';
+  document.getElementById('mfP').textContent=oppName+' joined! Let\'s play!';
+  document.getElementById('matchFoundModal').classList.add('on');
 
-  if(isHost){
-    onlineDeal();
-  }
+  if(isHost) onlineDeal();
   listenOnline();
+  document.getElementById('abChat').style.display='block';
+  document.getElementById('bluffRow').style.display='flex';
 }
 
 function onlineDeal(){
   if(!G.roomRef)return;
   const d=shuffle(mkDeck());
-  const hc=[d[0],d[1],d[2]], gc=[d[3],d[4],d[5]];
-  const hChips=G.myRole==='host'?G.p[0].chips:G.p[1].chips;
-  const gChips=G.myRole==='host'?G.p[1].chips:G.p[0].chips;
+  const hc=[d[0],d[1],d[2]],gc=[d[3],d[4],d[5]];
   G.roomRef.update({
-    gameState:{pot:10,bet:5,turn:'host',showAll:false,over:false,winner:null,round:(G._round||1)},
-    hostCards:JSON.stringify(hc), guestCards:JSON.stringify(gc),
-    hostChips:hChips-5, guestChips:gChips-5,
-    hostBet:5, guestBet:5,
-    hostSeen:false, guestSeen:false,
-    hostFolded:false, guestFolded:false,
+    gameState:{pot:10,bet:5,turn:'host',showAll:false,over:false,winner:null},
+    hostCards:JSON.stringify(hc),guestCards:JSON.stringify(gc),
+    hostChips:G.p[G.myRole==='host'?0:1].chips-5,guestChips:G.p[G.myRole==='host'?1:0].chips-5,
+    hostBet:5,guestBet:5,hostSeen:false,guestSeen:false,hostFolded:false,guestFolded:false,
   });
-  G._round=(G._round||1)+1;
 }
 
 function listenOnline(){
   if(!G.roomRef)return;
-  // Disconnect cleanup
   G.roomRef.child('status').onDisconnect().set('abandoned');
+  G.roomRef.on('value',snap=>{
+    const r=snap.val();if(!r||!r.gameState)return;
+    if(r.status==='abandoned'){G.roomRef.off();document.getElementById('oppLeftModal').classList.add('on');return;}
 
-  G.roomListener=G.roomRef.on('value',snap=>{
-    const r=snap.val(); if(!r||!r.gameState)return;
-
-    if(r.status==='abandoned'){
-      G.roomRef.off(); document.getElementById('oppModal').classList.add('on'); return;
-    }
-
-    // Sync state
     const gs=r.gameState;
-    const myCards  = G.myRole==='host'?JSON.parse(r.hostCards||'[]'):JSON.parse(r.guestCards||'[]');
-    const oppCards = G.myRole==='host'?JSON.parse(r.guestCards||'[]'):JSON.parse(r.hostCards||'[]');
-    const myChips  = G.myRole==='host'?r.hostChips:r.guestChips;
-    const oppChips = G.myRole==='host'?r.guestChips:r.hostChips;
-    const mySeen   = G.myRole==='host'?r.hostSeen:r.guestSeen;
-    const myFolded = G.myRole==='host'?r.hostFolded:r.guestFolded;
-    const oppFolded= G.myRole==='host'?r.guestFolded:r.hostFolded;
+    const mk=G.myRole,ok=mk==='host'?'guest':'host';
 
-    G.p[0]={...G.p[0],chips:myChips,cards:myCards,seen:mySeen,folded:myFolded,bet:G.myRole==='host'?r.hostBet:r.guestBet};
-    G.p[1]={...G.p[1],chips:oppChips,cards:oppCards,folded:oppFolded,bet:G.myRole==='host'?r.guestBet:r.hostBet};
-    G.pot=gs.pot; G.bet=gs.bet; G.showAll=gs.showAll; G.gameOver=gs.over;
-    // Turn: host=0 my perspective, guest=0 their perspective
-    G.turn = (gs.turn===G.myRole) ? 0 : 1;
+    /* ── BUG FIX: Map my role's data to p[0] always ── */
+    const myCards=JSON.parse(r[mk+'Cards']||'[]');
+    const opCards=JSON.parse(r[ok+'Cards']||'[]');
+    G.p[0]={...G.p[0],chips:r[mk+'Chips']||0,cards:myCards,seen:r[mk+'Seen']||false,folded:r[mk+'Folded']||false,bet:r[mk+'Bet']||0};
+    G.p[1]={...G.p[1],chips:r[ok+'Chips']||0,cards:opCards,folded:r[ok+'Folded']||false,bet:r[ok+'Bet']||0};
+    G.pot=gs.pot||0;G.bet=gs.bet||5;G.showAll=gs.showAll||false;G.gameOver=gs.over||false;
+
+    /* ── BUG FIX: G.turn=0 = MY turn, G.turn=1 = opponent's turn ── */
+    G.turn = (gs.turn===mk) ? 0 : 1;
+
+    // Sync chat
+    if(r.chat) renderChat(r.chat,mk);
+
+    // Bluff meter update
+    updateBluff(gs.lastAction,gs.lastPlayer);
 
     if(gs.over&&gs.winner){
-      const iWon = gs.winner===G.myRole;
-      G.lastWin=iWon; G.showAll=true;
-      if(iWon){G.streak++;G.totalWins++;G.onlineWins++;if(G.streak>G.bestStreak)G.bestStreak=G.streak;SFX.win();confetti();}
-      else{G.streak=0;SFX.lose();}
-      G.totalGames++;save();checkAchs();ui();
-      setTimeout(()=>showResult(iWon?0:1,'show'),800);
-      return;
+      const iWon=(gs.winner===mk);
+      G.lastWin=iWon;G.showAll=true;
+      if(iWon){G.streak++;G.totalWins++;if(G.streak>G.bestStreak)G.bestStreak=G.streak;SFX.win();confetti();}
+      else{G.streak=0;G.totalLosses++;SFX.lose();}
+      G.totalGames++;save();checkAchs();
+      if(fbDB&&ME&&!ME.isGuest)fbDB.ref('players/'+ME.uid).update({chips:G.p[0].chips,wins:G.totalWins,losses:G.totalLosses});
+      ui();setTimeout(()=>showResult(iWon?0:1,'show'),800);return;
     }
-    ui(); if(G.pot>0){SFX.chip();pulsePot();}
+    ui();
+    if(G.pot>0){SFX.chip();pulsePot();}
   });
 }
 
 function actOnline(action){
-  if(!G.roomRef)return;
-  const me=G.p[0], opp=G.p[1];
-  const mk=G.myRole, ok=G.myRole==='host'?'guest':'host';
+  if(!G.roomRef||G.turn!==0)return; // ← BUG FIX: use G.turn===0 (my turn)
+  const mk=G.myRole,ok=mk==='host'?'guest':'host';
+  const me=G.p[0],opp=G.p[1];
   const u={};
-  if(action==='see'){u[mk+'Seen']=true;G.roomRef.update(u);me.seen=true;renderCards();updateAbar();return;}
-  if(action==='fold'){u[mk+'Folded']=true;u['gameState/over']=true;u['gameState/winner']=ok;u[ok+'Chips']=opp.chips+G.pot;G.roomRef.update(u);return;}
-  if(action==='call'){const a=Math.min(G.bet,me.chips);u[mk+'Chips']=me.chips-a;u[mk+'Bet']=me.bet+a;u['gameState/pot']=G.pot+a;u['gameState/turn']=ok;G.roomRef.update(u);return;}
-  if(action==='raise'){const a=Math.min(G.bet*2,me.chips);u[mk+'Chips']=me.chips-a;u[mk+'Bet']=me.bet+a;u['gameState/pot']=G.pot+a;u['gameState/bet']=G.bet*2;u['gameState/turn']=ok;G.roomRef.update(u);return;}
+
+  if(action==='see'){u[mk+'Seen']=true;u['gameState/lastAction']='see';u['gameState/lastPlayer']=mk;G.roomRef.update(u);me.seen=true;renderCards();updateAbar();return;}
+  if(action==='fold'){u[mk+'Folded']=true;u['gameState/over']=true;u['gameState/winner']=ok;u[ok+'Chips']=opp.chips+G.pot;u['gameState/lastAction']='fold';u['gameState/lastPlayer']=mk;G.roomRef.update(u);return;}
+  if(action==='call'){const a=Math.min(G.bet,me.chips);u[mk+'Chips']=me.chips-a;u[mk+'Bet']=me.bet+a;u['gameState/pot']=G.pot+a;u['gameState/turn']=ok;u['gameState/lastAction']='call';u['gameState/lastPlayer']=mk;G.roomRef.update(u);return;}
+  if(action==='raise'){const a=Math.min(G.bet*2,me.chips);u[mk+'Chips']=me.chips-a;u[mk+'Bet']=me.bet+a;u['gameState/pot']=G.pot+a;u['gameState/bet']=G.bet*2;u['gameState/turn']=ok;u['gameState/lastAction']='raise';u['gameState/lastPlayer']=mk;G.roomRef.update(u);return;}
   if(action==='allin'){const a=me.chips;u[mk+'Chips']=0;u[mk+'Bet']=me.bet+a;u['gameState/pot']=G.pot+a;
     const h0=evalH(me.cards),h1=evalH(opp.cards),cmp=cmpH(h0,h1);
     const winner=cmp>=0?mk:ok;
     u['gameState/over']=true;u['gameState/showAll']=true;u['gameState/winner']=winner;
     u[winner+'Chips']=(cmp>=0?me.chips:opp.chips)+G.pot+a;
-    G.roomRef.update(u);return;}
+    u['gameState/lastAction']='allin';u['gameState/lastPlayer']=mk;G.roomRef.update(u);return;}
   if(action==='show'){
     const h0=evalH(G.p[0].cards),h1=evalH(G.p[1].cards),cmp=cmpH(h0,h1);
     const winner=cmp>=0?mk:ok;
     u['gameState/over']=true;u['gameState/showAll']=true;u['gameState/winner']=winner;
     u[winner+'Chips']=(cmp>=0?me.chips:opp.chips)+G.pot;
-    G.roomRef.update(u);return;}
+    u['gameState/lastAction']='show';u['gameState/lastPlayer']=mk;G.roomRef.update(u);return;}
 }
 
-function cancelRoom(){
-  if(G.roomRef){
-    try{G.roomRef.off();}catch(e){}
-    if(G.roomCode&&fbDB)fbDB.ref('rooms/'+G.roomCode).update({status:'abandoned'}).catch(()=>{});
-    G.roomRef=null; G.roomCode=''; G.roomListener=null;
-  }
+/* ═══ BLUFF METER ═══ */
+function updateBluff(lastAction,lastPlayer){
+  if(!lastAction||lastPlayer===G.myRole)return;
+  const changes={raise:+20,allin:+30,call:0,fold:-10,see:-5};
+  G.bluffScore=Math.max(0,Math.min(100,(G.bluffScore||30)+(changes[lastAction]||0)));
+  const fill=document.getElementById('bluffFill');
+  const lbl=document.getElementById('bluffLbl');
+  if(fill)fill.style.width=G.bluffScore+'%';
+  if(fill){fill.style.background=G.bluffScore>70?'var(--rd)':G.bluffScore>40?'#f39c12':'var(--gr)';}
+  if(lbl)lbl.textContent=G.bluffScore>70?'🔥 Suspicious':G.bluffScore>40?'🤔 Uncertain':'😌 Calm';
 }
 
-/* ═══════════════════════════════════════════════════
-   GAME START HELPERS
-═══════════════════════════════════════════════════ */
-function startCPU(){
-  G.mode='cpu';
-  G.p[0].name=ME?.displayName?.split(' ')[0]||'You'; G.p[0].av=G.p[0].photo?null:'😎'; G.p[0].photo=ME?.photoURL||null;
-  G.p[1]={name:'CPU',av:'🤖',photo:null,chips:500,cards:[],seen:false,folded:false,bet:0};
-  newRound(); showScr('gameScr');
+/* ═══ CHAT ═══ */
+function openChat(){document.getElementById('chatDrawer').classList.add('open');}
+function closeChat(){document.getElementById('chatDrawer').classList.remove('open');}
+function sendEmoji(e){sendChat(e);}
+function sendQuick(t){sendChat(t);}
+function sendChat(msg){
+  if(!G.roomRef||!ME)return;
+  SFX.chat();
+  G.roomRef.child('chat').push({uid:ME.uid,name:ME.displayName,msg,ts:firebase.database.ServerValue.TIMESTAMP});
+}
+function renderChat(chatData,mk){
+  const msgs=document.getElementById('chatMsgs');
+  const items=Object.values(chatData).sort((a,b)=>a.ts-b.ts).slice(-20);
+  msgs.innerHTML=items.map(m=>`
+    <div class="chat-msg ${m.uid===ME?.uid?'me':'opp'}">
+      <div class="chat-name">${m.uid===ME?.uid?'You':m.name}</div>
+      ${m.msg}
+    </div>`).join('');
+  msgs.scrollTop=msgs.scrollHeight;
 }
 
-function nextRound(){
-  if(G.p[0].chips<=0){alert('Chips khatam bhai! 😂');goLobby();return;}
-  if(G.mode==='online'){if(G.myRole==='host')onlineDeal();showScr('gameScr');return;}
-  if(G.p[1].chips<=0)G.p[1].chips=500;
-  newRound(); showScr('gameScr');
-  if(G.mode==='pass')ppShowPassScreen(0);
+/* ═══ DECK & HANDS ═══ */
+function mkDeck(){let d=[];for(let s of SUITS)for(let r of RANKS)d.push({r,s});return d;}
+function shuffle(a){for(let i=a.length-1;i>0;i--){let j=~~(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function dealCards(){const d=shuffle(mkDeck());G.p[0].cards=[d[0],d[1],d[2]];G.p[1].cards=[d[3],d[4],d[5]];}
+function evalH(cards){
+  const v=cards.map(c=>RV[c.r]).sort((a,b)=>b-a);
+  const s=cards.map(c=>c.s);
+  const fl=s.every(x=>x===s[0]),st=(v[0]-v[1]===1&&v[1]-v[2]===1)||(v[0]===14&&v[1]===3&&v[2]===2);
+  const tr=v[0]===v[1]&&v[1]===v[2],pr=v[0]===v[1]||v[1]===v[2]||v[0]===v[2];
+  if(tr)return{rank:5,name:'Trail 🎯',v};if(fl&&st)return{rank:4,name:'Pure Sequence ♠',v};
+  if(st)return{rank:3,name:'Sequence 🔢',v};if(fl)return{rank:2,name:'Color/Flush ♣',v};
+  if(pr)return{rank:1,name:'Pair ✌️',v};return{rank:0,name:'High Card',v};
+}
+function cmpH(h1,h2){if(h1.rank!==h2.rank)return h1.rank>h2.rank?1:-1;for(let i=0;i<h1.v.length;i++)if(h1.v[i]!==h2.v[i])return h1.v[i]>h2.v[i]?1:-1;return 0;}
+
+/* ═══ CARD HTML ═══ */
+function cardH(c,hidden,idx){
+  const dl=idx*.12+'s';
+  if(hidden)return`<div class="card hid deal" style="animation-delay:${dl}"></div>`;
+  return`<div class="card ${SC[c.s]} deal" style="animation-delay:${dl}"><div class="ct">${c.r}</div><div class="cm">${c.s}</div><div class="cb">${c.r}</div></div>`;
+}
+function setAv(id,p){
+  const el=document.getElementById(id);if(!el)return;
+  el.innerHTML=p.photo?`<img src="${p.photo}" alt="">`:(p.av||p.name?.[0]||'?');
 }
 
-/* ═══════════════════════════════════════════════════
-   SHOWDOWN & RESULT
-═══════════════════════════════════════════════════ */
+/* ═══ NEW ROUND ═══ */
+function newRound(){
+  G.pot=0;G.bet=5;G.turn=0;G.gameOver=false;G.showAll=false;
+  G.lastAllIn=false;G.lastRank=-1;G.lastWin=false;G.ppCurrent=0;G.bluffScore=30;
+  for(const p of G.p){p.cards=[];p.seen=false;p.folded=false;p.bet=0;}
+  dealCards();
+  for(const p of G.p){const a=Math.min(G.ante,p.chips);p.chips-=a;p.bet+=a;G.pot+=a;}
+  G.totalGames++;setTaunt('Cards dealt! Ante ₹'+G.ante+' each. Good luck 🃏');SFX.deal();ui();
+}
+
+/* ═══ MAIN UI ═══ */
+function ui(){
+  const p0=G.p[0],p1=G.p[1];
+  ['g1n','pn1'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=p0.name.split(' ')[0];});
+  ['g2n','pn2'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=p1.name.split(' ')[0];});
+  ['g1c','pc1'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=p0.chips;});
+  ['g2c','pc2'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=p1.chips;});
+  document.getElementById('potN').textContent=G.pot;
+  setAv('av1',p0);setAv('av2',p1);
+  document.getElementById('brandChipsN').textContent=p0.chips;
+
+  const sb=document.getElementById('strBar');
+  if(sb)sb.innerHTML=G.streak>=2?`<span class="sf">🔥</span><span>${G.streak} Win Streak!</span>`:'';
+
+  const t0=G.turn===0&&!G.gameOver,t1=G.turn===1&&!G.gameOver;
+  if(document.getElementById('pz1'))document.getElementById('pz1').className='pzone'+(t0?' active':'')+(p0.folded?' fold':'');
+  if(document.getElementById('pz2'))document.getElementById('pz2').className='pzone'+(t1?' active':'')+(p1.folded?' fold':'');
+
+  const ps=(id,p,active,isCPU)=>{const e=document.getElementById(id);if(!e)return;
+    if(p.folded){e.textContent='Folded';e.className='pst2 fold';}
+    else if(active){e.textContent=isCPU?'Thinking...':'Playing';e.className='pst2 '+(isCPU?'think':'turn');}
+    else{e.textContent=active?'Your Turn':'Waiting';e.className='pst2';}};
+  ps('ps1',p0,G.turn===0,false);ps('ps2',p1,G.turn===1,G.mode==='cpu');
+  const av2=document.getElementById('av2');
+  if(av2)av2.classList.toggle('think',G.mode==='cpu'&&G.turn===1&&!G.gameOver);
+
+  renderCards();updateAbar();
+}
+
+function renderCards(){
+  const p0=G.p[0],p1=G.p[1];
+  let show0,show1;
+  if(G.showAll){show0=true;show1=true;}
+  else if(G.mode==='cpu'){show0=p0.seen;show1=false;}
+  else if(G.mode==='pass'){show0=(G.ppCurrent===0)&&p0.seen;show1=(G.ppCurrent===1)&&p1.seen;}
+  else{show0=p0.seen;show1=G.showAll;}  // online: show0=my cards if seen
+  const e1=document.getElementById('p1c'),e2=document.getElementById('p2c');
+  if(e1)e1.innerHTML=p0.cards.map((c,i)=>cardH(c,!show0,i)).join('');
+  if(e2)e2.innerHTML=p1.cards.map((c,i)=>cardH(c,!show1,i)).join('');
+  const h1=document.getElementById('hl1'),h2=document.getElementById('hl2');
+  if(h1)h1.textContent=(show0&&!p0.folded)?evalH(p0.cards).name:'';
+  if(h2)h2.textContent=(show1&&!p1.folded)?evalH(p1.cards).name:'';
+}
+
+function updateAbar(){
+  const abar=document.getElementById('abar');if(!abar)return;
+  /* ══ KEY FIX: G.turn===0 ALWAYS means MY turn (mapped consistently for all modes) ══ */
+  let can;
+  if(G.mode==='pass') can=!G.gameOver; // P&P: physical security, always allow
+  else can=(G.turn===0)&&!G.gameOver;  // CPU + Online: G.turn=0=my turn
+
+  abar.classList.toggle('dis',!can);
+  const cp=G.mode==='pass'?G.p[G.ppCurrent]:G.p[0];
+  let turnTxt=can?`${cp.name.split(' ')[0]}'s Turn — Bet: ₹${G.bet}`:(G.mode==='cpu'?'CPU thinking...':'Waiting for opponent...');
+  const at=document.getElementById('aturn');if(at)at.textContent=turnTxt;
+  const seen=G.mode==='pass'?G.p[G.ppCurrent].seen:G.p[0].seen;
+  const seBtn=document.getElementById('abSee');if(seBtn)seBtn.style.display=seen?'none':'block';
+  const cb=document.getElementById('abCall');if(cb)cb.textContent=`✅ ₹${G.bet}`;
+  const rb=document.getElementById('abRaise');if(rb)rb.textContent=`⬆ ₹${G.bet*2}`;
+  const tot=G.p[0].bet+G.p[1].bet;
+  const sh=document.getElementById('abShow');if(sh)sh.style.display=(tot>=40&&!G.p[0].folded&&!G.p[1].folded)?'block':'none';
+}
+
+function setTaunt(m,c=''){const t=document.getElementById('taunt');if(t){t.textContent=m;t.className='taunt '+c;}}
+function rT(k){const a=TAUNTS[k];return a[~~(Math.random()*a.length)];}
+function pulsePot(){const r=document.getElementById('potRing');if(r){r.classList.remove('bump');void r.offsetWidth;r.classList.add('bump');}}
+
+/* ═══ ACTION DISPATCHER ═══ */
+function act(a){
+  if(G.gameOver)return;
+  if(AC2.state==='suspended')AC2.resume();
+  if(G.mode==='cpu')actCPU(a);
+  else if(G.mode==='pass')actPP(a);
+  else actOnline(a);
+}
+
+/* ═══ CPU ACTIONS ═══ */
+function actCPU(action){
+  const p=G.p[0],opp=G.p[1];
+  if(action==='see'){p.seen=true;setTaunt('You look at your cards 👁️');ui();return;}
+  if(action==='fold'){SFX.fold();p.folded=true;opp.chips+=G.pot;G.showAll=true;endWin(1,'fold');return;}
+  if(action==='call'){const a=Math.min(G.bet,p.chips);p.chips-=a;p.bet+=a;G.pot+=a;SFX.chip();pulsePot();setTaunt('You call ₹'+a+'.');}
+  if(action==='raise'){const a=Math.min(G.bet*2,p.chips);p.chips-=a;p.bet+=a;G.pot+=a;G.bet*=2;SFX.raise();pulsePot();setTaunt('You raise ₹'+G.bet+'! 😤','win');}
+  if(action==='allin'){const a=p.chips;p.chips=0;p.bet+=a;G.pot+=a;G.lastAllIn=true;SFX.raise();pulsePot();setTaunt('ALL-IN! 💎','win');G.showAll=true;ui();setTimeout(doShowdown,900);return;}
+  if(action==='show'){G.showAll=true;doShowdown();return;}
+  G.turn=1;ui();setTimeout(cpuThink,900+~~(Math.random()*700));
+}
+function cpuThink(){
+  const cpu=G.p[1];cpu.seen=true;
+  const h=evalH(cpu.cards),r=Math.random(),tot=G.p[0].bet+G.p[1].bet;
+  let a;
+  if(h.rank>=4)a=r<.7?'raise':'call';
+  else if(h.rank===3)a=r<.45?'raise':r<.85?'call':'fold';
+  else if(h.rank===2)a=r<.25?'raise':r<.68?'call':'fold';
+  else if(h.rank>=1)a=r<.12?'raise':r<.52?'call':'fold';
+  else a=r<.08?'raise':r<.38?'call':'fold';
+  if(r<.04&&cpu.chips>60)a='allin';
+  if(tot>=80&&r<.3){G.showAll=true;doShowdown();return;}
+  if(a==='fold'){SFX.fold();cpu.folded=true;G.p[0].chips+=G.pot;G.showAll=true;setTaunt(rT('wk'));endWin(0,'fold');return;}
+  if(a==='call'){const am=Math.min(G.bet,cpu.chips);cpu.chips-=am;cpu.bet+=am;G.pot+=am;SFX.chip();pulsePot();setTaunt(rT('blf'),'cpu');}
+  if(a==='raise'){const am=Math.min(G.bet*2,cpu.chips);cpu.chips-=am;cpu.bet+=am;G.pot+=am;G.bet*=2;SFX.raise();pulsePot();setTaunt(rT('str'),'cpu');}
+  if(a==='allin'){const am=cpu.chips;cpu.chips=0;cpu.bet+=am;G.pot+=am;G.lastAllIn=true;SFX.raise();pulsePot();setTaunt(rT('all'),'cpu');G.showAll=true;ui();setTimeout(doShowdown,800);return;}
+  G.turn=0;ui();
+}
+
+/* ═══ PASS & PLAY — FIXED ═══ */
+function startPP(){
+  G.mode='pass';
+  G.p[0].name=ME?.displayName?.split(' ')[0]||'Player 1';G.p[0].av='🙋';
+  G.p[1]={name:'Player 2',av:'🙋',photo:null,chips:500,cards:[],seen:false,folded:false,bet:0};
+  newRound();ppShowPass(0);
+}
+function ppShowPass(to){
+  G.ppCurrent=to;G.turn=to;
+  const name=G.p[to].name;
+  const e1=document.getElementById('p1c'),e2=document.getElementById('p2c');
+  if(e1)e1.innerHTML=G.p[0].cards.map((_,i)=>cardH(null,true,i)).join('');
+  if(e2)e2.innerHTML=G.p[1].cards.map((_,i)=>cardH(null,true,i)).join('');
+  const h1=document.getElementById('hl1'),h2=document.getElementById('hl2');
+  if(h1)h1.textContent='';if(h2)h2.textContent='';
+  const ph=document.getElementById('passH'),pd=document.getElementById('passD'),pb=document.getElementById('passRevBtn');
+  if(ph)ph.textContent=name+"'s Turn";
+  if(pd)pd.textContent=`Pass phone to ${name}. Don't look!`;
+  if(pb)pb.textContent=`👁 I'm ${name} — Show My Cards`;
+  showScr('passScr');
+}
+function ppReveal(){
+  const idx=G.ppCurrent;G.p[idx].seen=false;G.turn=idx;showScr('gameScr');
+  const e1=document.getElementById('p1c'),e2=document.getElementById('p2c');
+  if(e1)e1.innerHTML=G.p[0].cards.map((c,i)=>cardH(c,idx!==0,i)).join('');
+  if(e2)e2.innerHTML=G.p[1].cards.map((c,i)=>cardH(c,idx!==1,i)).join('');
+  ['hl1','hl2'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='';});
+  updateAbar();ui();
+}
+function actPP(action){
+  const idx=G.ppCurrent,p=G.p[idx],opp=G.p[1-idx];
+  if(action==='see'){p.seen=true;const cid=idx===0?'p1c':'p2c',hlid=idx===0?'hl1':'hl2';
+    const ce=document.getElementById(cid),he=document.getElementById(hlid);
+    if(ce)ce.innerHTML=p.cards.map((c,i)=>cardH(c,false,i)).join('');
+    if(he)he.textContent=evalH(p.cards).name;updateAbar();return;}
+  if(action==='fold'){SFX.fold();p.folded=true;opp.chips+=G.pot;G.showAll=true;
+    setTaunt(p.name+' folds! '+opp.name+' wins! 🏆','win');endWin(1-idx,'fold');return;}
+  if(action==='call'){const a=Math.min(G.bet,p.chips);p.chips-=a;p.bet+=a;G.pot+=a;SFX.chip();pulsePot();setTaunt(p.name+' calls ₹'+a+'.');}
+  if(action==='raise'){const a=Math.min(G.bet*2,p.chips);p.chips-=a;p.bet+=a;G.pot+=a;G.bet*=2;SFX.raise();pulsePot();setTaunt(p.name+' raises ₹'+G.bet+'!','win');}
+  if(action==='allin'){const a=p.chips;p.chips=0;p.bet+=a;G.pot+=a;G.lastAllIn=true;SFX.raise();pulsePot();setTaunt(p.name+' ALL-IN! 💎','win');G.showAll=true;ui();setTimeout(doShowdown,900);return;}
+  if(action==='show'){G.showAll=true;doShowdown();return;}
+  const tot=G.p[0].bet+G.p[1].bet;
+  const sh=document.getElementById('abShow');if(sh&&tot>=40)sh.style.display='block';
+  setTimeout(()=>ppShowPass(1-idx),400);
+}
+
+/* ═══ SHOWDOWN & RESULT ═══ */
 function doShowdown(){
   const h0=evalH(G.p[0].cards),h1=evalH(G.p[1].cards),cmp=cmpH(h0,h1);
-  const winIdx=cmp>=0?0:1;
-  G.p[winIdx].chips+=G.pot;
-  if(G.pot>G.bigPot)G.bigPot=G.pot;
-  if(winIdx===0){
-    G.streak++;G.totalWins++;G.lastWin=true;G.lastRank=h0.rank;
-    if(G.streak>G.bestStreak)G.bestStreak=G.streak;
-    SFX.win();confetti();setTaunt('🎉 You win! '+rT('wk'),'win');
-  } else {
-    G.streak=0;G.lastWin=false;SFX.lose();setTaunt(rT('win'),'cpu');
-  }
-  G.totalGames++;save();checkAchs();ui();
-  setTimeout(()=>endWin(winIdx,'show'),800);
+  const wi=cmp>=0?0:1;G.p[wi].chips+=G.pot;if(G.pot>G.bigPot)G.bigPot=G.pot;
+  if(wi===0){G.streak++;G.totalWins++;G.lastWin=true;G.lastRank=h0.rank;
+    if(G.streak>G.bestStreak)G.bestStreak=G.streak;SFX.win();confetti();setTaunt('🎉 You win! '+rT('wk'),'win');}
+  else{G.streak=0;G.totalLosses++;G.lastWin=false;SFX.lose();setTaunt(rT('win'),'cpu');}
+  G.totalGames++;save();checkAchs();
+  if(fbDB&&ME&&!ME.isGuest)fbDB.ref('players/'+ME.uid).update({chips:G.p[0].chips,wins:G.totalWins,losses:G.totalLosses}).catch(()=>{});
+  ui();setTimeout(()=>endWin(wi,'show'),800);
 }
-
-function endWin(winIdx,reason){
-  G.gameOver=true;
-  if(winIdx===0&&reason!=='show'){G.streak++;G.totalWins++;G.lastWin=true;if(G.streak>G.bestStreak)G.bestStreak=G.streak;SFX.win();confetti();}
-  else if(winIdx===1&&reason!=='show'){G.streak=0;G.lastWin=false;SFX.lose();}
-  if(reason!=='show'){G.totalGames++;save();checkAchs();}
-  ui(); setTimeout(()=>showResult(winIdx,reason),600);
-}
-
-function showResult(winIdx,reason){
-  const win=G.p[winIdx],lose=G.p[1-winIdx];
+function endWin(wi,reason){G.gameOver=true;ui();setTimeout(()=>showResult(wi,reason),600);}
+function showResult(wi,reason){
+  const win=G.p[wi],lose=G.p[1-wi];
   const wH=evalH(win.cards),lH=evalH(lose.cards);
-  document.getElementById('resT').textContent=(winIdx===0?'🏆 ':'💀 ')+win.name+' Wins!';
+  document.getElementById('resT').textContent=(wi===0?'🏆 ':'💀 ')+win.name+' Wins!';
   document.getElementById('resS').textContent=reason==='fold'?lose.name+' folded':'Best: '+wH.name;
   document.getElementById('resP').textContent='+₹'+G.pot;
-  const wC=win.cards.map(c=>c.r+c.s).join('  ');
-  const lC=lose.cards.map(c=>c.r+c.s).join('  ');
+  const wC=win.cards.map(c=>c.r+c.s).join('  '),lC=lose.cards.map(c=>c.r+c.s).join('  ');
   document.getElementById('bothH').innerHTML=`
-    <div class="hbox win"><div class="hbox-name">${win.av||'👤'} ${win.name}</div>
-      <div class="hbox-type">${wH.name}</div><div class="hbox-cards">${wC}</div></div>
-    <div class="hbox"><div class="hbox-name">${lose.av||'👤'} ${lose.name}</div>
-      <div class="hbox-type">${reason==='fold'?'Folded ❌':lH.name}</div><div class="hbox-cards">${lC}</div></div>`;
-  document.getElementById('chipsB').innerHTML=
-    `<div>${G.p[0].av||'👤'} ${G.p[0].name}: <strong style="color:var(--gold)">₹${G.p[0].chips}</strong></div>
-     <div>${G.p[1].av||'👤'} ${G.p[1].name}: <strong style="color:var(--gold)">₹${G.p[1].chips}</strong></div>
-     <div style="color:var(--dim);font-size:11px">Wins: ${G.totalWins} | Streak: ${G.bestStreak} 🔥</div>`;
-  document.getElementById('dblBtn').style.display=(winIdx===0&&G.p[0].chips>0&&G.mode!=='online')?'block':'none';
+    <div class="hb win"><div class="hb-n">${win.av||'👤'} ${win.name}</div><div class="hb-t">${wH.name}</div><div class="hb-c">${wC}</div></div>
+    <div class="hb"><div class="hb-n">${lose.av||'👤'} ${lose.name}</div><div class="hb-t">${reason==='fold'?'Folded ❌':lH.name}</div><div class="hb-c">${lC}</div></div>`;
+  document.getElementById('cbrd').innerHTML=`
+    <div>${G.p[0].av||'👤'} ${G.p[0].name}: <strong style="color:var(--gd)">₹${G.p[0].chips}</strong></div>
+    <div>${G.p[1].av||'👤'} ${G.p[1].name}: <strong style="color:var(--gd)">₹${G.p[1].chips}</strong></div>
+    <div style="color:var(--dm);font-size:11px">Wins:${G.totalWins} | Streak:${G.bestStreak} 🔥</div>`;
+  document.getElementById('dblBtn').style.display=(wi===0&&G.p[0].chips>0&&G.mode!=='online')?'block':'none';
   showScr('resultScr');
 }
-
+function nextRound(){
+  if(G.p[0].chips<=0){toast('💀','Chips khatam bhai!');goLobby();return;}
+  if(G.mode==='online'){if(G.myRole==='host')onlineDeal();showScr('gameScr');return;}
+  if(G.p[1].chips<=0)G.p[1].chips=500;
+  newRound();showScr('gameScr');
+  if(G.mode==='pass')ppShowPass(0);
+}
 function doDouble(){
   const d=shuffle(mkDeck()),m=d[0],c=d[1];
   if(RV[m.r]>=RV[c.r]){G.p[0].chips*=2;toast('💎','Double — WON! 🎉');SFX.win();}
-  else{G.p[0].chips=Math.floor(G.p[0].chips/2);SFX.lose();}
-  save(); nextRound();
+  else{G.p[0].chips=Math.floor(G.p[0].chips/2);setTaunt('Double or Nothing: Lost!');SFX.lose();}
+  save();nextRound();
 }
 
-/* ═══════════════════════════════════════════════════
-   EFFECTS
-═══════════════════════════════════════════════════ */
+/* ═══ START CPU/PP ═══ */
+function startCPU(){
+  G.mode='cpu';
+  G.p[0]={...G.p[0],name:ME?.displayName?.split(' ')[0]||'You',photo:ME?.photoURL||null};
+  G.p[1]={name:'CPU',av:'🤖',photo:null,chips:500,cards:[],seen:false,folded:false,bet:0};
+  G.p[0].av=G.p[0].photo?null:'😎';
+  document.getElementById('abChat').style.display='none';
+  document.getElementById('bluffRow').style.display='none';
+  newRound();showScr('gameScr');
+}
+
+/* ═══ EFFECTS ═══ */
 function confetti(){
   const cols=['#f0c040','#e74c3c','#2ecc71','#3498db','#9b59b6','#fff'];
-  for(let i=0;i<55;i++){
-    const el=document.createElement('div'); el.className='cf';
-    el.style.cssText=`left:${Math.random()*100}vw;top:-20px;
-      background:${cols[~~(Math.random()*cols.length)]};
-      width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;
-      border-radius:${Math.random()>.5?'50%':'2px'};
-      animation-duration:${1.5+Math.random()*2}s;animation-delay:${Math.random()*.5}s;`;
-    document.body.appendChild(el);setTimeout(()=>el.remove(),4000);
-  }
+  for(let i=0;i<55;i++){const el=document.createElement('div');el.className='cf';
+    el.style.cssText=`left:${Math.random()*100}vw;top:-20px;background:${cols[~~(Math.random()*cols.length)]};width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;border-radius:${Math.random()>.5?'50%':'2px'};animation-duration:${1.5+Math.random()*2}s;animation-delay:${Math.random()*.5}s;`;
+    document.body.appendChild(el);setTimeout(()=>el.remove(),4000);}
 }
-
 let achQ=[],achBusy=false;
-function checkAchs(){
-  for(const a of ACHS)if(!G.unlockedAchs.has(a.id)&&a.c(G)){G.unlockedAchs.add(a.id);achQ.push(a);}
-  if(!achBusy)drainAch();
-}
-function drainAch(){
-  if(!achQ.length){achBusy=false;return;}achBusy=true;
-  const a=achQ.shift(); toast(a.icon,a.name); SFX.ach();
-  setTimeout(()=>drainAch(),2500);
-}
-function toast(icon,name){
-  document.getElementById('atIco').textContent=icon;
-  document.getElementById('atName').textContent=name;
-  const t=document.getElementById('achT');t.classList.add('on');
-  setTimeout(()=>t.classList.remove('on'),2200);
+function checkAchs(){for(const a of ACHS)if(!G.unlockedAchs.has(a.id)&&a.c(G)){G.unlockedAchs.add(a.id);achQ.push(a);}if(!achBusy)drainAch();}
+function drainAch(){if(!achQ.length){achBusy=false;return;}achBusy=true;const a=achQ.shift();toast(a.i,a.n);SFX.ach();setTimeout(drainAch,2500);}
+let toastTimer=null;
+function toast(ico,name){
+  const t=document.getElementById('toastEl');
+  document.getElementById('tIco').textContent=ico;document.getElementById('tN').textContent=name;
+  t.classList.add('on');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('on'),2500);
 }
 
-/* ═══════════════════════════════════════════════════
-   NAVIGATION
-═══════════════════════════════════════════════════ */
-function showScr(id){
-  document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
-  document.getElementById(id).classList.add('on');
-}
+/* ═══ NAV ═══ */
+function showScr(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));const e=document.getElementById(id);if(e)e.classList.add('on');}
+function closeModal(id){document.getElementById(id).classList.remove('on');}
 function goLobby(){
-  cancelRoom(); G.gameOver=true; updateLobbyUI(); showScr('lobbyScr');
+  cancelRoom();leaveQueue();G.gameOver=true;closeChat();
+  history.replaceState(null,'',location.pathname);
+  updateHomeUI();showScr('homeScr');
 }
 
-/* ═══════════════════════════════════════════════════
-   BOOT
-═══════════════════════════════════════════════════ */
-load();
-handleRedirectResult(); // Handle Google/FB redirect after WebView sign-in
+/* ═══ BOOT ═══ */
+load();handleRedirect();
+// Listen for friend invites
+if(fbDB&&ME&&!ME.isGuest){
+  fbDB.ref('players/'+ME.uid+'/invite').on('value',snap=>{
+    const inv=snap.val();
+    if(inv){toast('📨','Game invite from '+inv.from+'! Room: '+inv.room);
+      fbDB.ref('players/'+ME.uid+'/invite').remove();
+      setTimeout(()=>{if(confirm('Accept invite from '+inv.from+'? Room: '+inv.room)){
+        document.getElementById('joinInput').value=inv.room;goHub();hubTab(2);
+      }},500);}
+  });
+}
 </script>
 </body>
-</html>
+</html>"""
+
+with open('/home/claude/index.html', 'w', encoding='utf-8') as f:
+    f.write(html)
+
+import os
+size = os.path.getsize('/home/claude/index.html')
+lines = html.count('\n')
+print(f"Written: {lines} lines, {size//1024}KB")
+
