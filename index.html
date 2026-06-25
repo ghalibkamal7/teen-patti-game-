@@ -999,7 +999,7 @@ async function goLeaderboard(){
   players.sort((a,b)=>b.chips-a.chips);
   const medals=['🥇','🥈','🥉'];
   document.getElementById('lbList').innerHTML=players.length?players.map((p,i)=>`
-    <div class="lb-row ${p.uid===ME?.uid?'":""}">
+    <div class="lb-row ${p.uid===ME?.uid ? 'me' : ''}">
       <div class="lb-rank">${medals[i]||('#'+(i+1))}</div>
       <div class="av" style="width:34px;height:34px;font-size:16px">${p.photo?`<img src="${p.photo}" alt="">`:p.name[0]||'?'}</div>
       <div class="lb-name">${p.name}${p.username?'<br><span style="font-size:10px;color:var(--dm)">@'+p.username+'</span>':''}</div>
